@@ -1,0 +1,15 @@
+\.orig$
+\.orig\..*$
+\.chg\..*$
+\.rej$
+\.conflict\~$
+^NetbeansCommunityHelp-Module/src/main/patches/org-netbeans-modules-editor-completion\.jar$
+^config\.ini$
+^NetbeansCommunityHelp-server/index$
+^NetbeansCommunityHelp-server/src/main/resources/rebel\.xml$
+^NetbeansCommunityHelp-server/description_indexes$
+^NetbeansCommunityHelp-server/help_indexes$
+^sql/db_model\.mwb\.bak$
+^CodeSnippetsCommunityManager-server/index$
+^CodeSnippetsCommunityManager-server/src/main/resources/rebel\.xml$
+^CodeSnippetsCommunityManager-Module/src/main/patches/org-netbeans-modules-editor-completion\.jar$

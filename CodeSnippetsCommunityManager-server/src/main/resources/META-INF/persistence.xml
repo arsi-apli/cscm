@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="nbHelp_jar_01.00PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>sk.arsi.nb.help.server.db.Ranks</class>
+    <class>sk.arsi.nb.help.server.db.Helps</class>
+    <class>sk.arsi.nb.help.server.db.Keyslist</class>
+    <class>sk.arsi.nb.help.server.db.Users</class>
+    <class>sk.arsi.nb.help.server.db.Mimetype</class>
+    <class>sk.arsi.nb.help.server.db.Classeslist</class>
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+        <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+        <property name="javax.persistence.schema-generation.database.action" value="create"/>
+        <property name="javax.persistence.jdbc.user" value="sa" />
+        <property name="javax.persistence.jdbc.password" value="" />
+        <property name="eclipselink.ddl-generation" value="create-tables"/>
+        <property name="eclipselink.ddl-generation.output-mode" value="database" />
+    </properties>
+  </persistence-unit>
+</persistence>
