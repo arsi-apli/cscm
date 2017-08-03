@@ -191,7 +191,7 @@ public final class HelpCompletionProvider implements CompletionProvider {
             if (selectedText == null) {
                 if (doc instanceof BaseDocument) {
                     //description search
-                    ((BaseDocument) doc).readLock();
+                    ((AbstractDocument) doc).readLock();
                     int lineStart = 0;
                     int lineEnd = 0;
                     try {
@@ -204,7 +204,7 @@ public final class HelpCompletionProvider implements CompletionProvider {
                         }
                     } catch (Exception e) {
                     } finally {
-                        ((BaseDocument) doc).readUnlock();
+                        ((AbstractDocument) doc).readUnlock();
                     }
                 }
 

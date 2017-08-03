@@ -8,7 +8,7 @@
     </parent>
     <artifactId>CodeSnippetsCommunityManager-Module</artifactId>
     <packaging>nbm</packaging>
-    <version>01.06</version>
+    <version>01.07</version>
     <build>
         <plugins>
             <plugin>

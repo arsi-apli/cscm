@@ -140,7 +140,7 @@ public class TransferManager {
                         Boolean disableAuth = (Boolean) ConfigManager.SERVER.get(ConfigManager.SERVER_TURN_OFF_AUTHENTICATION, Boolean.class);
                         Users user = DatabaseManager.findUser(msg.getEmail());
                         if (!disableAuth) {
-                            if (user == null || !user.getPassword().equals(msg.getPasswordHash()) || user.getAllow() == null || !user.getAllow()) {
+                            if (user == null || !user.getPassword().equals(msg.getPasswordHash())) {
                                 ctx.channel().writeAndFlush(new Status(false));
                                 ReferenceCountUtil.release(msg);
                                 ctx.channel().close();

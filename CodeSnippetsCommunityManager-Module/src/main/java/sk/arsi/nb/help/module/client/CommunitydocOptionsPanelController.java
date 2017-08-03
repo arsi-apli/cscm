@@ -29,9 +29,9 @@ import org.openide.util.Lookup;
         location = "Editor",
         displayName = "#AdvancedOption_DisplayName_Communitydoc",
         keywords = "#AdvancedOption_Keywords_Communitydoc",
-        keywordsCategory = "Editor/Communitydoc"
+        keywordsCategory = "Editor/Snippets"
 )
-@org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_Communitydoc=Community doc", "AdvancedOption_Keywords_Communitydoc=doc"})
+@org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_Communitydoc=Code snippets", "AdvancedOption_Keywords_Communitydoc=snippets"})
 public final class CommunitydocOptionsPanelController extends OptionsPanelController {
 
     private CommunitydocPanel panel;
