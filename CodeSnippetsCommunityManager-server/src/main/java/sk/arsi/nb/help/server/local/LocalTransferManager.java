@@ -60,6 +60,10 @@ public class LocalTransferManager {
         DatabaseManager.createMimeIfNotExist("text/html");
     }
 
+    public static void backup(String sqlPath) {
+        DatabaseManager.backup(sqlPath);
+    }
+
     public static HelpRecord[] findByKey(FindByKey msg) throws Exception {
         List<HelpRecord> records = new ArrayList<>();
         try {
@@ -145,6 +149,10 @@ public class LocalTransferManager {
             }
             records.add(new HelpRecord(help.getIdhelps(), help.getCreateddate(), help.getUser().getFirst() + " " + help.getUser().getLast(), help.getHelp(), rank, keys.toArray(new String[keys.size()]), cls.toArray(new String[cls.size()]), help.getDescription()));
         }
+    }
+
+    public static void restore(String absolutePath) {
+        DatabaseManager.restore(absolutePath);
     }
 
 }

@@ -98,6 +98,18 @@ public class LuceneManager {
         }));
     }
 
+    public static final void clearAll() {
+        try {
+            HELP_WRITER.deleteAll();
+            HELP_WRITER.commit();
+            DESCRIPTION_WRITER.deleteAll();
+            DESCRIPTION_WRITER.commit();
+        } catch (IOException ex) {
+            Logger.getLogger(LuceneManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public static final void addHelp(int index, String code) {
         Document doc = new Document();
         doc.add(new TextField("help", code, Field.Store.NO));
