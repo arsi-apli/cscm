@@ -194,6 +194,10 @@ public class NbDocClient {
         return null;
     }
 
+    public static void backup(String sql) {
+        LocalTransferManager.backup(sql);
+    }
+
     public static Status addRank(long id, int rank, ServerType serverType) {
         try {
             Socket clientSocket = connect(serverType);
@@ -268,6 +272,10 @@ public class NbDocClient {
     }
 
     private static final byte[] LENGTH_PLACEHOLDER = new byte[4];
+
+    static void restore(String absolutePath) {
+        LocalTransferManager.restore(absolutePath);
+    }
 
     private static class ObjectEncoderA {
 
