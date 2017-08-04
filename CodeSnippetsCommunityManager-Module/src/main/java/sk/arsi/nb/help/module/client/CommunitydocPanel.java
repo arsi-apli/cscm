@@ -16,13 +16,16 @@
  */
 package sk.arsi.nb.help.module.client;
 
+import java.io.File;
 import java.util.prefs.BackingStoreException;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import sk.arsi.nb.help.module.actions.SearchSelector;
@@ -366,6 +369,11 @@ public final class CommunitydocPanel extends javax.swing.JPanel {
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(importLocalDb, org.openide.util.NbBundle.getMessage(CommunitydocPanel.class, "CommunitydocPanel.importLocalDb.text")); // NOI18N
+        importLocalDb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importLocalDbActionPerformed(evt);
+            }
+        });
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(CommunitydocPanel.class, "CommunitydocPanel.jPanel4.border.title"))); // NOI18N
 
@@ -465,6 +473,18 @@ public final class CommunitydocPanel extends javax.swing.JPanel {
 
     private void exportLocalDbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportLocalDbActionPerformed
         // TODO add your handling code here:
+        FileChooserBuilder builder = new FileChooserBuilder(CommunitydocPanel.class);
+        builder.setFilesOnly(true);
+        builder.setFileFilter(new FileNameExtensionFilter("zip", "zip"));
+        builder.setTitle("Local database export");
+        File file = builder.showSaveDialog();
+        if(file!=null){
+            String absolutePath = file.getAbsolutePath();
+            if (!absolutePath.endsWith(".zip")) {
+                absolutePath += ".zip";
+            }
+            NbDocClient.backup(absolutePath);
+        }
     }//GEN-LAST:event_exportLocalDbActionPerformed
 
     private void activatePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activatePasswordActionPerformed
@@ -542,6 +562,22 @@ public final class CommunitydocPanel extends javax.swing.JPanel {
     private void addressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_addressActionPerformed
+
+    private void importLocalDbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importLocalDbActionPerformed
+        // TODO add your handling code here:
+        FileChooserBuilder builder = new FileChooserBuilder(CommunitydocPanel.class);
+        builder.setFilesOnly(true);
+        builder.setFileFilter(new FileNameExtensionFilter("zip", "zip"));
+        builder.setTitle("Local database import");
+        File file = builder.showOpenDialog();
+        if(file!=null){
+            String absolutePath = file.getAbsolutePath();
+            if (!absolutePath.endsWith(".zip")) {
+                absolutePath += ".zip";
+            }
+            NbDocClient.restore(absolutePath);
+        }
+    }//GEN-LAST:event_importLocalDbActionPerformed
 
     void load() {
         address.setText(NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.SERVER, "server.arsi.sk"));

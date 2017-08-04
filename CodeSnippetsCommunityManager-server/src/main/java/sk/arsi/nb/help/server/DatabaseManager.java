@@ -21,6 +21,9 @@ import javax.persistence.TypedQuery;
 import org.eclipse.persistence.config.CacheType;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.jpa.JpaEntityManager;
+import org.eclipse.persistence.queries.CursoredStream;
+import org.eclipse.persistence.queries.ReadAllQuery;
+import org.h2.tools.Restore;
 import sk.arsi.nb.help.server.config.ConfigManager;
 import sk.arsi.nb.help.server.db.Classeslist;
 import sk.arsi.nb.help.server.db.Helps;
@@ -28,6 +31,7 @@ import sk.arsi.nb.help.server.db.Keyslist;
 import sk.arsi.nb.help.server.db.Mimetype;
 import sk.arsi.nb.help.server.db.Ranks;
 import sk.arsi.nb.help.server.db.Users;
+import sk.arsi.nb.help.server.lucene.LuceneManager;
 import sk.arsi.nb.help.transfer.AddRank;
 
 /**
@@ -39,8 +43,11 @@ public class DatabaseManager {
     private static EntityManagerFactory factory;
     private static final ScheduledExecutorService schedulerPool = Executors.newScheduledThreadPool(1);
     private static boolean local = true;
+    public static final String RESTORE = "sk.arsi.nb.help.server.restore";
+    private static String databaseDirectoryPath = null;
 
     public static final void startDatabase(String databaseDirectory) {
+        databaseDirectoryPath = databaseDirectory;
         Properties dbProps = new Properties();
         dbProps.put(PersistenceUnitProperties.LOGGING_LEVEL, "Fine");
         dbProps.put(PersistenceUnitProperties.LOGGING_EXCEPTIONS, "false");
@@ -56,6 +63,58 @@ public class DatabaseManager {
         dbProps.put(PersistenceUnitProperties.JDBC_USER, "sa");
         dbProps.put(PersistenceUnitProperties.JDBC_PASSWORD, "");
         factory = Persistence.createEntityManagerFactory("nbHelp_jar_01.00PU", dbProps);
+    }
+
+    /**
+     * Backup database for local NB client is caled from options, no other
+     * access for server do it manualy
+     *
+     * @param sqlPath
+     */
+    public static void backup(String sqlPath) {
+        JpaEntityManager manager = findManager();
+        EntityTransaction transaction = manager.getTransaction();
+        if (!transaction.isActive()) {
+            transaction.begin();
+        }
+        Query naQuery = manager.createNativeQuery(String.format("BACKUP TO '%s'", sqlPath));
+        naQuery.executeUpdate();
+        transaction.commit();
+    }
+
+    public static void generateNewIndex() {
+        LuceneManager.clearAll();
+        ReadAllQuery query = new ReadAllQuery(Helps.class);
+        query.useCursoredStream();
+        CursoredStream stream = (CursoredStream) findManager().getSession().executeQuery(query);
+        while (!stream.atEnd()) {
+            Helps help = (Helps) stream.read();
+            LuceneManager.addDescription(help.getIdhelps(), help.getDescription());
+            LuceneManager.addHelp(help.getIdhelps(), help.getHelp());
+            stream.releasePrevious();
+        }
+        stream.close();
+    }
+
+    public static void restore(String sqlPath) {
+        if (local) {
+            EntityTransaction transaction = localManager.getTransaction();
+            if (!transaction.isActive()) {
+                transaction.begin();
+            }
+            try {
+                Query naQuery = localManager.createNativeQuery("SHUTDOWN");
+                naQuery.executeUpdate();
+                transaction.commit();
+            } catch (Exception e) {
+            }
+            localManager.close();
+            factory.close();
+            localManager = null;
+            Restore.execute(sqlPath, databaseDirectoryPath, "codesnippetsDB");
+            startDatabase(databaseDirectoryPath);
+            generateNewIndex();
+        }
     }
 
     public static final void startDatabase() {
