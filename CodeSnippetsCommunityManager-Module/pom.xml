@@ -34,6 +34,11 @@
                             <id>org.netbeans.api:org-netbeans-modules-editor-completion</id>
                             <type>impl</type>
                         </dependency>
+                        <dependency>
+                            Private Package Reference
+                            <id>org.netbeans.api:org-netbeans-modules-editor-mimelookup</id>
+                            <type>impl</type>
+                        </dependency>
                     </moduleDependencies>
                 </configuration>
             </plugin>

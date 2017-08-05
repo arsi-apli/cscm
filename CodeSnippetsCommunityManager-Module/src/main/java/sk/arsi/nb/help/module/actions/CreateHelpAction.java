@@ -46,28 +46,7 @@ import sk.arsi.nb.help.transfer.CreateHelpRecord;
 @ActionID(id = "sk.arsi.nb.help.module.actions.CreateHelpAction", category = "Community help")
 @ActionRegistration(displayName = "#LBL_Action_CreateHelpAction", lazy = false)
 @ActionReferences(value = {
-    @ActionReference(path = "Editors/text/x-java/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/plain/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/rtf/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/css/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-asm/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-groovy/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-gsp/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/jade/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/javascript/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-json/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-latte/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/less/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-manifest/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-neon/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-oql/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-php/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-sql/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/scss/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-tpl/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-twig/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/x-yaml/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),
-    @ActionReference(path = "Editors/text/html/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),})
+    @ActionReference(path = "Editors/Popup", position = 99999998, separatorBefore = 99999997, separatorAfter = 99999999),})
 @NbBundle.Messages({"LBL_Action_CreateHelpAction=Create community help"})
 public class CreateHelpAction extends NodeAction {
 
