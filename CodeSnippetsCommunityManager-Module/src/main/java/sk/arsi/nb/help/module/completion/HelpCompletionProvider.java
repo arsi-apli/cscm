@@ -30,8 +30,6 @@ import javax.swing.text.JTextComponent;
 import org.netbeans.api.editor.document.LineDocumentUtils;
 import org.netbeans.api.editor.mimelookup.MimeLookup;
 import org.netbeans.api.editor.mimelookup.MimePath;
-import org.netbeans.api.editor.mimelookup.MimeRegistration;
-import org.netbeans.api.editor.mimelookup.MimeRegistrations;
 import org.netbeans.api.lexer.TokenHierarchy;
 import org.netbeans.api.lexer.TokenSequence;
 import org.netbeans.editor.BaseDocument;
@@ -58,29 +56,6 @@ import sk.arsi.nb.help.transfer.HelpRecord;
  *
  * @author Arsi
  */
-@MimeRegistrations({
-    @MimeRegistration(mimeType = "text/plain", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/rtf", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-java", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/css", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-asm", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-groovy", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-gsp", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/jade", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/javascript", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-json", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-latte", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/less", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-manifest", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-neon", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-oql", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-php", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-sql", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/scss", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-tpl", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-twig", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/x-yaml", service = CompletionProvider.class),
-    @MimeRegistration(mimeType = "text/html", service = CompletionProvider.class),})
 public final class HelpCompletionProvider implements CompletionProvider {
 
     public static final String FULLTEXTSEARCH = "FULLTEXTSEARCH";
