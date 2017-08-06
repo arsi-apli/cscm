@@ -359,4 +359,11 @@ public class DatabaseManager {
         return query.getResultList();
     }
 
+    public static List<Helps> findHelpsByMimeType(String mime) {
+        JpaEntityManager manager = DatabaseManager.findManager();
+        String sql = "SELECT * FROM HELPS h where  h.MIMETYPE_MIMETYPE='" + mime + "' ;";
+        Query query = manager.createNativeQuery(sql, Helps.class);
+        return query.getResultList();
+    }
+
 }
