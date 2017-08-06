@@ -21,7 +21,9 @@ import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
+import sk.arsi.nb.help.transfer.GetMimeTypes;
 import sk.arsi.nb.help.transfer.HelpRecord;
+import sk.arsi.nb.help.transfer.MimeRecord;
 import sk.arsi.nb.help.transfer.Status;
 
 /**
@@ -153,6 +155,16 @@ public class LocalTransferManager {
 
     public static void restore(String absolutePath) {
         DatabaseManager.restore(absolutePath);
+    }
+
+    public static MimeRecord[] getMimeTypes(GetMimeTypes msg) {
+        Mimetype[] allMimeTypes = DatabaseManager.allMimeTypes();
+        List<MimeRecord> records = new ArrayList<>();
+        for (Mimetype mime : allMimeTypes) {
+            records.add(new MimeRecord(mime.getMimetype(), mime.getDescription()));
+        }
+        return records.toArray(new MimeRecord[records.size()]);
+
     }
 
 }

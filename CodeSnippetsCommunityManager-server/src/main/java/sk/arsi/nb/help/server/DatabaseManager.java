@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.persistence.EntityManagerFactory;
@@ -94,6 +95,13 @@ public class DatabaseManager {
             stream.releasePrevious();
         }
         stream.close();
+    }
+
+    public static Mimetype[] allMimeTypes() {
+        JpaEntityManager manager = findManager();
+        ReadAllQuery query = new ReadAllQuery(Mimetype.class);
+        Vector<Mimetype> mimeTypes = (Vector<Mimetype>) manager.getSession().executeQuery(query);
+        return mimeTypes.toArray(new Mimetype[mimeTypes.size()]);
     }
 
     public static void restore(String sqlPath) {
