@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package sk.arsi.nb.help.module.client;
 
 /**
@@ -11,7 +10,19 @@ package sk.arsi.nb.help.module.client;
  * @author arsi
  */
 public enum ServerType {
-    MASTER,
-    TEAM,
-    LOCAL
+    MASTER("Community"),
+    TEAM("Team"),
+    LOCAL("Local");
+
+    private final String name;
+
+    private ServerType(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }
