@@ -366,4 +366,9 @@ public class DatabaseManager {
         return query.getResultList();
     }
 
+    public static Helps getHelpById(int id) {
+        JpaEntityManager manager = DatabaseManager.findManager();
+        return manager.find(Helps.class, id);
+    }
+
 }

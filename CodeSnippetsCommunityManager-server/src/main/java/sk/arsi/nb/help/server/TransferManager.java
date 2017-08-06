@@ -36,6 +36,7 @@ import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
 import sk.arsi.nb.help.transfer.GetDescriptions;
 import sk.arsi.nb.help.transfer.GetMimeTypes;
+import sk.arsi.nb.help.transfer.GetSingleHelpRecord;
 import sk.arsi.nb.help.transfer.HelpRecord;
 import sk.arsi.nb.help.transfer.MimeRecord;
 import sk.arsi.nb.help.transfer.RegeneratePassword;
@@ -326,25 +327,69 @@ public class TransferManager {
     }
 
     static void getMimeTypes(GetMimeTypes msg, ChannelHandlerContext ctx) {
-        Mimetype[] allMimeTypes = DatabaseManager.allMimeTypes();
-        List<MimeRecord> records = new ArrayList<>();
-        for (Mimetype mime : allMimeTypes) {
-            records.add(new MimeRecord(mime.getMimetype(), mime.getDescription()));
-        }
-        ctx.channel().writeAndFlush(records.toArray(new MimeRecord[records.size()]));
-        ReferenceCountUtil.release(msg);
-        ctx.channel().close();
-
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Mimetype[] allMimeTypes = DatabaseManager.allMimeTypes();
+                List<MimeRecord> records = new ArrayList<>();
+                for (Mimetype mime : allMimeTypes) {
+                    records.add(new MimeRecord(mime.getMimetype(), mime.getDescription()));
+                }
+                ctx.channel().writeAndFlush(records.toArray(new MimeRecord[records.size()]));
+                ReferenceCountUtil.release(msg);
+                ctx.channel().close();
+            }
+        };
+        Main.pool.execute(runnable);
     }
 
     public static void getDescriptions(GetDescriptions msg, ChannelHandlerContext ctx) {
-        List<Helps> helps = DatabaseManager.findHelpsByMimeType(msg.getMimeType());
-        List<DescriptionRecord> records = new ArrayList<>();
-        for (Helps help : helps) {
-            records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription()));
-        }
-        ctx.channel().writeAndFlush(records.toArray(new DescriptionRecord[records.size()]));
-        ReferenceCountUtil.release(msg);
-        ctx.channel().close();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                List<Helps> helps = DatabaseManager.findHelpsByMimeType(msg.getMimeType());
+                List<DescriptionRecord> records = new ArrayList<>();
+                for (Helps help : helps) {
+                    records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription()));
+                }
+                ctx.channel().writeAndFlush(records.toArray(new DescriptionRecord[records.size()]));
+                ReferenceCountUtil.release(msg);
+                ctx.channel().close();
+            }
+        };
+        Main.pool.execute(runnable);
+    }
+
+    public static void getSingleHelpRecord(GetSingleHelpRecord msg, ChannelHandlerContext ctx) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Helps help = DatabaseManager.getHelpById(msg.getId());
+                    if (help == null) {
+                        ctx.channel().writeAndFlush(new Status(false));
+                    } else {
+                        int rank = DatabaseManager.computeRankForHelp(help.getIdhelps());
+                        List<Classeslist> classeslistList = help.getClasseslistList();
+                        List<String> cls = new ArrayList<>();
+                        for (Classeslist l : classeslistList) {
+                            cls.add(l.getClassname());
+                        }
+                        List<Keyslist> keyslistList = help.getKeyslistList();
+                        List<String> keys = new ArrayList<>();
+                        for (Keyslist kls : keyslistList) {
+                            keys.add(kls.getKeyname());
+                        }
+                        HelpRecord rec = (new HelpRecord(help.getIdhelps(), help.getCreateddate(), help.getUser().getFirst() + " " + help.getUser().getLast(), help.getHelp(), rank, keys.toArray(new String[keys.size()]), cls.toArray(new String[cls.size()]), help.getDescription()));
+                        ctx.channel().writeAndFlush(rec);
+                    }
+                } catch (Exception e) {
+                    ctx.channel().writeAndFlush(new Status(false));
+                }
+                ReferenceCountUtil.release(msg);
+                ctx.channel().close();
+            }
+        };
+        Main.pool.execute(runnable);
     }
 }
