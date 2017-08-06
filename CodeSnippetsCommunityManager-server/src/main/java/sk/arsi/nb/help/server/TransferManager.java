@@ -33,7 +33,9 @@ import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
+import sk.arsi.nb.help.transfer.GetMimeTypes;
 import sk.arsi.nb.help.transfer.HelpRecord;
+import sk.arsi.nb.help.transfer.MimeRecord;
 import sk.arsi.nb.help.transfer.RegeneratePassword;
 import sk.arsi.nb.help.transfer.RegisterUser;
 import sk.arsi.nb.help.transfer.Status;
@@ -228,14 +230,17 @@ public class TransferManager {
                 if (user != null) {
                     if (user.getPassword().equals(msg.getPasswordHash())) {
                         ctx.channel().writeAndFlush(new AccountTestResult(msg.getEmail(), msg.getPasswordHash(), true));
+                        ReferenceCountUtil.release(msg);
                         ctx.channel().close();
                     } else {
                         ctx.channel().writeAndFlush(new AccountTestResult(msg.getEmail(), msg.getPasswordHash(), false));
+                        ReferenceCountUtil.release(msg);
                         ctx.channel().close();
                     }
 
                 } else {
                     ctx.channel().writeAndFlush(new AccountTestResult(msg.getEmail(), msg.getPasswordHash(), false));
+                    ReferenceCountUtil.release(msg);
                     ctx.channel().close();
                 }
             }
@@ -316,5 +321,17 @@ public class TransferManager {
                 return Integer.compare(o2.getRank(), o1.getRank());
             }
         });
+    }
+
+    static void getMimeTypes(GetMimeTypes msg, ChannelHandlerContext ctx) {
+        Mimetype[] allMimeTypes = DatabaseManager.allMimeTypes();
+        List<MimeRecord> records = new ArrayList<>();
+        for (Mimetype mime : allMimeTypes) {
+            records.add(new MimeRecord(mime.getMimetype(), mime.getDescription()));
+        }
+        ctx.channel().writeAndFlush(records.toArray(new MimeRecord[records.size()]));
+        ReferenceCountUtil.release(msg);
+        ctx.channel().close();
+
     }
 }

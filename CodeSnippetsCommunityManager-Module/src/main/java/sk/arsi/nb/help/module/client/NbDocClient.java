@@ -42,6 +42,7 @@ import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
+import sk.arsi.nb.help.transfer.GetMimeTypes;
 import sk.arsi.nb.help.transfer.RegeneratePassword;
 import sk.arsi.nb.help.transfer.RegisterUser;
 import sk.arsi.nb.help.transfer.Status;
@@ -146,6 +147,8 @@ public class NbDocClient {
                     return LocalTransferManager.findFullTextCode((FindFullTextCode) toSend);
                 } else if (toSend instanceof FindFullTextDescription) {
                     return LocalTransferManager.findFullTextDescription((FindFullTextDescription) toSend);
+                } else if (toSend instanceof GetMimeTypes) {
+                    return LocalTransferManager.getMimeTypes((GetMimeTypes) toSend);
                 }
 
         }
@@ -169,6 +172,15 @@ public class NbDocClient {
             Socket clientSocket = connect(serverType);
             FindByClass findByClass = new FindByClass(name, mimeType);
             return sendAndReceive(clientSocket, findByClass, serverType);
+        } catch (Exception ex) {
+        }
+        return null;
+    }
+
+    public static Object getAllMimeTypes(ServerType serverType) {
+        try {
+            Socket clientSocket = connect(serverType);
+            return sendAndReceive(clientSocket, new GetMimeTypes(), serverType);
         } catch (Exception ex) {
         }
         return null;
