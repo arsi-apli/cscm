@@ -63,6 +63,7 @@ import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
 import sk.arsi.nb.help.transfer.GetDescriptions;
 import sk.arsi.nb.help.transfer.GetMimeTypes;
+import sk.arsi.nb.help.transfer.GetSingleHelpRecord;
 import sk.arsi.nb.help.transfer.RegeneratePassword;
 import sk.arsi.nb.help.transfer.RegisterUser;
 import sk.arsi.nb.help.transfer.TestAccount;
@@ -302,6 +303,8 @@ public class Main {
                 TransferManager.getMimeTypes((GetMimeTypes) msg, ctx);
             } else if (msg instanceof GetMimeTypes) {
                 TransferManager.getDescriptions((GetDescriptions) msg, ctx);
+            } else if (msg instanceof GetSingleHelpRecord) {
+                TransferManager.getSingleHelpRecord((GetSingleHelpRecord) msg, ctx);
             } else {
                 ReferenceCountUtil.release(msg);
                 ctx.channel().close();

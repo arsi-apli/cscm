@@ -44,6 +44,7 @@ import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
 import sk.arsi.nb.help.transfer.GetDescriptions;
 import sk.arsi.nb.help.transfer.GetMimeTypes;
+import sk.arsi.nb.help.transfer.GetSingleHelpRecord;
 import sk.arsi.nb.help.transfer.RegeneratePassword;
 import sk.arsi.nb.help.transfer.RegisterUser;
 import sk.arsi.nb.help.transfer.Status;
@@ -152,6 +153,8 @@ public class NbDocClient {
                     return LocalTransferManager.getMimeTypes((GetMimeTypes) toSend);
                 } else if (toSend instanceof GetDescriptions) {
                     return LocalTransferManager.getDescriptions((GetDescriptions) toSend);
+                } else if (toSend instanceof GetSingleHelpRecord) {
+                    return LocalTransferManager.getSingleHelpRecord((GetSingleHelpRecord) toSend);
                 }
 
         }
