@@ -27,6 +27,7 @@ public class ServerSelector extends javax.swing.JPanel {
     public static final String GLOBAL = "GLOBAL";
     public static final String TEAM = "TEAM";
     public static final String LOCAL = "LOCAL";
+
     private final String prefix;
 
     //copy settings frem last selected
@@ -43,6 +44,19 @@ public class ServerSelector extends javax.swing.JPanel {
         return NbPreferences.forModule(ServerSelector.class).getBoolean(LOCAL + prefix, true);
     }
 
+    public final boolean isGlobalCreate() {
+        return global.isSelected();
+    }
+
+    public final boolean isTeamCreate() {
+        return team.isSelected();
+    }
+
+    public final boolean isLocalCreate() {
+        return local.isSelected();
+    }
+
+
     /**
      * Creates new form ServerSelector
      */
@@ -52,14 +66,20 @@ public class ServerSelector extends javax.swing.JPanel {
         global.setSelected(isGlobal());
         team.setSelected(isTeam());
         local.setSelected(isLocal());
+        global.setContentAreaFilled(false);
+        team.setContentAreaFilled(false);
+        local.setContentAreaFilled(false);
     }
 
     public ServerSelector() {
-        this.prefix = "";
+        this.prefix = "_CREATE";
         initComponents();
         global.setSelected(isGlobal());
         team.setSelected(isTeam());
         local.setSelected(isLocal());
+        global.setContentAreaFilled(false);
+        team.setContentAreaFilled(false);
+        local.setContentAreaFilled(false);
     }
 
     /**

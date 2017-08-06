@@ -42,6 +42,8 @@ public class SearchSelector extends javax.swing.JPanel {
             buttonF.setIcon(fOff);
             buttonK.setIcon(kOn);
         }
+        buttonF.setContentAreaFilled(false);
+        buttonK.setContentAreaFilled(false);
     }
 
     /**

@@ -175,9 +175,13 @@ public class NbDocClient {
     }
 
     public static Object getByFullTextDescription(String name, ServerType serverType, String mimeType) {
+        return getByFullTextDescription(name, serverType, mimeType, NbPreferences.forModule(CommunitydocPanel.class).getInt(NbDocClient.MAX_DESCRIPTION_RESULTS, 25));
+    }
+
+    public static Object getByFullTextDescription(String name, ServerType serverType, String mimeType, int count) {
         try {
             Socket clientSocket = connect(serverType);
-            FindFullTextDescription findByClass = new FindFullTextDescription(name, mimeType, NbPreferences.forModule(CommunitydocPanel.class).getInt(NbDocClient.MAX_DESCRIPTION_RESULTS, 25));
+            FindFullTextDescription findByClass = new FindFullTextDescription(name, mimeType, count);
             return sendAndReceive(clientSocket, findByClass, serverType);
         } catch (Exception ex) {
         }
@@ -185,9 +189,13 @@ public class NbDocClient {
     }
 
     public static Object getByFullTextCode(String name, ServerType serverType, String mimeType) {
+        return getByFullTextCode(name, serverType, mimeType, NbPreferences.forModule(CommunitydocPanel.class).getInt(NbDocClient.MAX_CODE_RESULTS, 25));
+    }
+
+    public static Object getByFullTextCode(String name, ServerType serverType, String mimeType, int count) {
         try {
             Socket clientSocket = connect(serverType);
-            FindFullTextCode findByClass = new FindFullTextCode(name, mimeType, NbPreferences.forModule(CommunitydocPanel.class).getInt(NbDocClient.MAX_CODE_RESULTS, 25));
+            FindFullTextCode findByClass = new FindFullTextCode(name, mimeType, count);
             return sendAndReceive(clientSocket, findByClass, serverType);
         } catch (Exception ex) {
         }

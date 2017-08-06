@@ -16,14 +16,33 @@
  */
 package sk.arsi.nb.help.module.actions;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListDataListener;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.util.ImageUtilities;
+import sk.arsi.nb.help.module.client.HelpRecordProxy;
+import sk.arsi.nb.help.module.client.NbDocClient;
+import sk.arsi.nb.help.module.client.ServerType;
+import sk.arsi.nb.help.module.client.SnippetTools;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.HelpRecord;
 
 /**
  *
@@ -33,18 +52,33 @@ public class CreateHelpPanel extends javax.swing.JPanel {
 
     private JEditorPane editorPane;
     private final String mimeTypeType;
+    private HelpRecordProxy[] duplicateCodeArray;
+    private static final ExecutorService pool = Executors.newFixedThreadPool(1);
+    private HelpRecordProxy[] duplicateDescriptionsArray;
+    private static ImageIcon iconMaster;
+    private static ImageIcon iconTeam;
+    private static ImageIcon iconLocal;
 
     /**
      * Creates new form CreateHelpPanel
      */
     public CreateHelpPanel(final String code, final String mimeType) {
         initComponents();
+        if (iconMaster == null) {
+            iconMaster = ImageUtilities.loadImageIcon("sk/arsi/nb/help/module/help_item.png", false); // NOI18N
+        }
+        if (iconTeam == null) {
+            iconTeam = ImageUtilities.loadImageIcon("sk/arsi/nb/help/module/help_item_team.png", false); // NOI18N
+        }
+        if (iconLocal == null) {
+            iconLocal = ImageUtilities.loadImageIcon("sk/arsi/nb/help/module/help_item_local.png", false); // NOI18N
+        }
         this.mimeTypeType = mimeType;
         duplicateCode.setVisible(false);
-        duplicateDescription.setVisible(false);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+
                 JComponent[] editorComponents = Tools.createSingleLineEditor(mimeType);
                 JScrollPane sp = (JScrollPane) editorComponents[0];
                 editorPane = (JEditorPane) editorComponents[1];
@@ -54,21 +88,152 @@ public class CreateHelpPanel extends javax.swing.JPanel {
                 description.setText("");
                 editorPane.setFocusable(true);
                 editorPane.requestFocus();
+                description.getDocument().addDocumentListener(new DocumentListener() {
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        updateDescriptionDuplicates(description.getText());
+                    }
+
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+                        updateDescriptionDuplicates(description.getText());
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {
+                        updateDescriptionDuplicates(description.getText());
+                    }
+
+                });
+                duplicateDescriptions.setCellRenderer(new DefaultListCellRenderer() {
+                    @Override
+                    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                        JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                        if (value instanceof HelpRecordProxy) {
+                            switch (((HelpRecordProxy) value).getServerType()) {
+                                case MASTER:
+                                    label.setIcon(iconMaster);
+                                    break;
+                                case TEAM:
+                                    label.setIcon(iconTeam);
+                                    break;
+                                case LOCAL:
+                                    label.setIcon(iconLocal);
+                                    break;
+                                default:
+                                    throw new AssertionError(((HelpRecordProxy) value).getServerType().name());
+
+                            }
+                            label.setText(((HelpRecordProxy) value).getDescription());
+                            label.setToolTipText(SnippetTools.snippetToHtml(((HelpRecordProxy) value)));
+                        }
+                        return label;
+                    }
+                });
             }
         };
         SwingUtilities.invokeLater(runnable);
+        pool.execute(() -> {
+            duplicateCodeArray = findDuplicateCode(code, mimeType);
+            if (duplicateCodeArray.length > 0) {
+                duplicateCode.setVisible(true);
+            }
+        });
+
+    }
+
+    private class DescriptionListModel implements ListModel<HelpRecordProxy> {
+
+        private final HelpRecordProxy helps[];
+
+        public DescriptionListModel(HelpRecordProxy[] helps) {
+            this.helps = helps;
+        }
+
+        @Override
+        public int getSize() {
+            return helps.length;
+        }
+
+        @Override
+        public HelpRecordProxy getElementAt(int index) {
+            return helps[index];
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+        }
+
+    }
+
+    private void updateDescriptionDuplicates(final String text) {
+        if (!"".equals(text) && text.length() > 1) {
+            pool.execute(() -> {
+                duplicateDescriptionsArray = findDuplicateDescription(text, mimeTypeType);
+                HelpRecordProxy selectedValue = duplicateDescriptions.getSelectedValue();
+                duplicateDescriptions.setModel(new DescriptionListModel(duplicateDescriptionsArray));
+                if (selectedValue != null) {
+                    for (int i = 0; i < duplicateCodeArray.length; i++) {
+                        HelpRecordProxy rec = duplicateCodeArray[i];
+                        if (selectedValue.equals(rec)) {
+                            duplicateDescriptions.setSelectedIndex(i);
+                        }
+                    }
+                }
+
+            });
+        } else {
+            duplicateDescriptions.setModel(new DescriptionListModel(new HelpRecordProxy[0]));
+        }
+
+    }
+
+    private HelpRecordProxy[] findDuplicateDescription(final String code, final String mimeType) {
+        List<HelpRecordProxy> tmp = new ArrayList<>();
+        Object fromMaster = NbDocClient.getByFullTextDescription(code, ServerType.MASTER, mimeType, 7);
+        readRecords(tmp, fromMaster, ServerType.MASTER);
+        Object fromTeam = NbDocClient.getByFullTextDescription(code, ServerType.TEAM, mimeType, 7);
+        readRecords(tmp, fromTeam, ServerType.TEAM);
+        Object fromLocal = NbDocClient.getByFullTextDescription(code, ServerType.LOCAL, mimeType, 7);
+        readRecords(tmp, fromLocal, ServerType.LOCAL);
+
+        return tmp.toArray(new HelpRecordProxy[tmp.size()]);
+    }
+
+    private HelpRecordProxy[] findDuplicateCode(final String code, final String mimeType) {
+        List<HelpRecordProxy> tmp = new ArrayList<>();
+        Object fromMaster = NbDocClient.getByFullTextCode(code, ServerType.MASTER, mimeType, 10);
+        readRecords(tmp, fromMaster, ServerType.MASTER);
+        Object fromTeam = NbDocClient.getByFullTextCode(code, ServerType.TEAM, mimeType, 10);
+        readRecords(tmp, fromTeam, ServerType.TEAM);
+        Object fromLocal = NbDocClient.getByFullTextCode(code, ServerType.LOCAL, mimeType, 10);
+        readRecords(tmp, fromLocal, ServerType.LOCAL);
+
+        return tmp.toArray(new HelpRecordProxy[tmp.size()]);
+    }
+
+    private void readRecords(List<HelpRecordProxy> tmp, Object helps, ServerType serverType) {
+        if (helps instanceof HelpRecord[]) {
+            for (HelpRecord rec : ((HelpRecord[]) helps)) {
+                tmp.add(new HelpRecordProxy(rec, serverType));
+            }
+        }
     }
 
     public boolean isSendToGlobal() {
-        return serverSelector1.isGlobal();
+        return serverSelector1.isGlobalCreate();
     }
 
     public boolean isSendToTeam() {
-        return serverSelector1.isTeam();
+        return serverSelector1.isTeamCreate();
     }
 
     public boolean isSendToLocal() {
-        return serverSelector1.isLocal();
+        return serverSelector1.isLocalCreate();
     }
 
     public CreateHelpRecord getRecord() {
@@ -113,7 +278,8 @@ public class CreateHelpPanel extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         mimeType = new javax.swing.JLabel();
         duplicateCode = new javax.swing.JButton();
-        duplicateDescription = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        duplicateDescriptions = new javax.swing.JList<>();
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.jLabel1.text")); // NOI18N
 
@@ -137,9 +303,18 @@ public class CreateHelpPanel extends javax.swing.JPanel {
 
         duplicateCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sk/arsi/nb/help/module/alert.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(duplicateCode, org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.duplicateCode.text")); // NOI18N
+        duplicateCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                duplicateCodeActionPerformed(evt);
+            }
+        });
 
-        duplicateDescription.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sk/arsi/nb/help/module/alert.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(duplicateDescription, org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.duplicateDescription.text")); // NOI18N
+        duplicateDescriptions.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                duplicateDescriptionMouseClick(evt);
+            }
+        });
+        jScrollPane1.setViewportView(duplicateDescriptions);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -154,66 +329,83 @@ public class CreateHelpPanel extends javax.swing.JPanel {
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(classes, javax.swing.GroupLayout.DEFAULT_SIZE, 692, Short.MAX_VALUE)
-                    .addComponent(keys)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(keys, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(serverSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(mimeType)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(duplicateCode)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(description)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(duplicateDescription)))
-                .addContainerGap())
+                        .addComponent(duplicateCode))
+                    .addComponent(classes, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(description))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(keys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(classes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel3)
-                    .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(duplicateDescription))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel4)
-                    .addComponent(serverSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(mimeType)
-                    .addComponent(duplicateCode))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(keys, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(classes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel3)
+                            .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel4)
+                            .addComponent(serverSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(mimeType)
+                            .addComponent(duplicateCode)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void duplicateCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateCodeActionPerformed
+        // TODO add your handling code here:
+        Object[] options = new Object[]{DialogDescriptor.OK_OPTION};
+        DialogDescriptor dd = new DialogDescriptor(new SnippetsViewer(duplicateCodeArray, mimeTypeType), "Snippets viewer", true, options, DialogDescriptor.OK_OPTION, DialogDescriptor.RIGHT_ALIGN, null, null);
+        Object notify = DialogDisplayer.getDefault().notify(dd);
+    }//GEN-LAST:event_duplicateCodeActionPerformed
+
+    private void duplicateDescriptionMouseClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_duplicateDescriptionMouseClick
+        // TODO add your handling code here:
+        JList list = (JList) evt.getSource();
+        if (evt.getClickCount() == 2) {
+            int index = list.locationToIndex(evt.getPoint());
+            description.setText(duplicateDescriptions.getModel().getElementAt(index).getDescription());
+        }
+    }//GEN-LAST:event_duplicateDescriptionMouseClick
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField classes;
     private javax.swing.JTextField description;
     private javax.swing.JButton duplicateCode;
-    private javax.swing.JButton duplicateDescription;
+    private javax.swing.JList<HelpRecordProxy> duplicateDescriptions;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField keys;
     private javax.swing.JLabel mimeType;
     private sk.arsi.nb.help.module.actions.ServerSelector serverSelector1;
     // End of variables declaration//GEN-END:variables
+
 }
