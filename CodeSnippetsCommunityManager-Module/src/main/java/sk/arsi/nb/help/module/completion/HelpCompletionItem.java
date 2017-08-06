@@ -42,6 +42,7 @@ import sk.arsi.nb.help.module.actions.SearchSelectionToolbar;
 import sk.arsi.nb.help.module.actions.SearchSelector;
 import sk.arsi.nb.help.module.client.NbDocClient;
 import sk.arsi.nb.help.module.client.ServerType;
+import sk.arsi.nb.help.module.client.SnippetTools;
 import sk.arsi.nb.help.transfer.HelpRecord;
 
 /**
@@ -235,37 +236,7 @@ public class HelpCompletionItem implements CompletionItem {
 
         @Override
         protected void query(CompletionResultSet resultSet, Document doc, int caretOffset) {
-            String text = "<html>";
-            text += "<b>Keys: </b>";
-            String out = "";
-            String[] keys = help.getKeys();
-            for (int i = 0; i < keys.length; i++) {
-                out += keys[i];
-                if (i < keys.length - 1) {
-                    out += ", ";
-                }
-            }
-            text += out + "<br>";
-            out = "";
-            text += "<b>Classes: </b>";
-            String[] classes = help.getClasses();
-            if (classes.length > 0) {
-                for (int i = 0; i < classes.length; i++) {
-                    out += classes[i];
-                    if (i < classes.length - 1) {
-                        out += ", ";
-                    }
-                }
-            }
-            text += out + "<br>";
-            if (help.getUser() != null) {
-                text += "<b>Created by: </b>";
-                text += help.getUser() + "<br>";
-            }
-            text += "<p style=\"background-color: #F5EFFB\">";
-            text += help.getCode().replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>").replace(" ", "&nbsp;").replace("\t", "&#09;");
-            text += "</p><html>";
-            resultSet.setDocumentation(new DocItem(text));
+            resultSet.setDocumentation(new DocItem(SnippetTools.snippetToHtml(help)));
             resultSet.finish();
         }
     }
