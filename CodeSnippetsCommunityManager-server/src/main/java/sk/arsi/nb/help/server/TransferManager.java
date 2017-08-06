@@ -29,10 +29,12 @@ import sk.arsi.nb.help.server.mail.MailTools;
 import sk.arsi.nb.help.transfer.AccountTestResult;
 import sk.arsi.nb.help.transfer.AddRank;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.DescriptionRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
+import sk.arsi.nb.help.transfer.GetDescriptions;
 import sk.arsi.nb.help.transfer.GetMimeTypes;
 import sk.arsi.nb.help.transfer.HelpRecord;
 import sk.arsi.nb.help.transfer.MimeRecord;
@@ -333,5 +335,16 @@ public class TransferManager {
         ReferenceCountUtil.release(msg);
         ctx.channel().close();
 
+    }
+
+    public static void getDescriptions(GetDescriptions msg, ChannelHandlerContext ctx) {
+        List<Helps> helps = DatabaseManager.findHelpsByMimeType(msg.getMimeType());
+        List<DescriptionRecord> records = new ArrayList<>();
+        for (Helps help : helps) {
+            records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription()));
+        }
+        ctx.channel().writeAndFlush(records.toArray(new DescriptionRecord[records.size()]));
+        ReferenceCountUtil.release(msg);
+        ctx.channel().close();
     }
 }

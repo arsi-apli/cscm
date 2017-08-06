@@ -17,10 +17,12 @@ import sk.arsi.nb.help.server.db.Mimetype;
 import sk.arsi.nb.help.server.db.Users;
 import sk.arsi.nb.help.server.lucene.LuceneManager;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.DescriptionRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
 import sk.arsi.nb.help.transfer.FindFullTextDescription;
+import sk.arsi.nb.help.transfer.GetDescriptions;
 import sk.arsi.nb.help.transfer.GetMimeTypes;
 import sk.arsi.nb.help.transfer.HelpRecord;
 import sk.arsi.nb.help.transfer.MimeRecord;
@@ -164,7 +166,15 @@ public class LocalTransferManager {
             records.add(new MimeRecord(mime.getMimetype(), mime.getDescription()));
         }
         return records.toArray(new MimeRecord[records.size()]);
+    }
 
+    public static DescriptionRecord[] getDescriptions(GetDescriptions msg) {
+        List<Helps> helps = DatabaseManager.findHelpsByMimeType(msg.getMimeType());
+        List<DescriptionRecord> records = new ArrayList<>();
+        for (Helps help : helps) {
+            records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription()));
+        }
+        return records.toArray(new DescriptionRecord[records.size()]);
     }
 
 }
