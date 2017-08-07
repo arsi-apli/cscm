@@ -1,18 +1,46 @@
 /*
- * (C) Copyright 2017 Arsi (http://www.arsi.sk/).
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright 1997-2010 Oracle and/or its affiliates. All rights reserved.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+ * Other names may be trademarks of their respective owners.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common
+ * Development and Distribution License("CDDL") (collectively, the
+ * "License"). You may not use this file except in compliance with the
+ * License. You can obtain a copy of the License at
+ * http://www.netbeans.org/cddl-gplv2.html
+ * or nbbuild/licenses/CDDL-GPL-2-CP. See the License for the
+ * specific language governing permissions and limitations under the
+ * License.  When distributing the software, include this License Header
+ * Notice in each file and include the License file at
+ * nbbuild/licenses/CDDL-GPL-2-CP.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the GPL Version 2 section of the License file that
+ * accompanied this code. If applicable, add the following below the
+ * License Header, with the fields enclosed by brackets [] replaced by
+ * your own identifying information:
+ * "Portions Copyrighted [year] [name of copyright owner]"
  *
+ * Contributor(s):
+ *
+ * The Original Software is NetBeans. The Initial Developer of the Original
+ * Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+ * Microsystems, Inc. All Rights Reserved.
+ *
+ * If you wish your version of this file to be governed by only the CDDL
+ * or only the GPL Version 2, indicate your decision by adding
+ * "[Contributor] elects to include this software in this distribution
+ * under the [CDDL or GPL Version 2] license." If you do not indicate a
+ * single choice of license, a recipient has the option to distribute
+ * your version of this file under either the CDDL, the GPL Version 2 or
+ * to extend the choice of license to its licensees as provided above.
+ * However, if you add GPL Version 2 code and therefore, elected the GPL
+ * Version 2 license, then the option applies only if the new code is
+ * made subject to such option by the copyright holder.
+ * Mod by Arsi
  */
 package sk.arsi.nb.help.module.actions;
 
@@ -51,8 +79,8 @@ import org.openide.util.Exceptions;
  */
 public class Tools {
 
-    public static JComponent[] createSingleLineEditor(String mimeType) {
-        assert SwingUtilities.isEventDispatchThread() : "Utilities.createSingleLineEditor must be called from AWT thread only"; // NOI18N
+    public static JComponent[] createEditorEditor(String mimeType) {
+        assert SwingUtilities.isEventDispatchThread() : "createEditor must be called from AWT thread only"; // NOI18N
 
         EditorKit kit = MimeLookup.getLookup(mimeType).lookup(EditorKit.class);
         if (kit == null) {
@@ -60,11 +88,6 @@ public class Tools {
         }
 
         final JEditorPane editorPane = new JEditorPane();
-//        editorPane.putClientProperty(
-//                "HighlightsLayerExcludes", //NOI18N
-//                ".*(?<!TextSelectionHighlighting)$" //NOI18N
-//        );
-//        editorPane.putClientProperty("AsTextField", Boolean.TRUE);
         editorPane.setEditorKit(kit);
 
         editorPane.setBorder(
@@ -75,15 +98,13 @@ public class Tools {
 
         final Insets margin = referenceTextField.getMargin();
         final Insets borderInsets = referenceTextField.getBorder().getBorderInsets(referenceTextField);
-        //logger.fine("createSingleLineEditor(): margin = "+margin+", borderInsets = "+borderInsets);
         final JScrollPane sp = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED) {
 
             @Override
             public void setViewportView(Component view) {
                 if (view instanceof JComponent) {
-                    //logger.fine("createSingleLineEditor() setViewportView(): setting empty border with insets = "+borderInsets);
-                    ((JComponent) view).setBorder(new EmptyBorder(margin)); // borderInsets
+                    ((JComponent) view).setBorder(new EmptyBorder(margin));
                 }
                 if (view instanceof JEditorPane) {
                     adjustScrollPaneSize(this, (JEditorPane) view);
@@ -107,7 +128,7 @@ public class Tools {
         int preferredHeight = referenceTextField.getPreferredSize().height;
         Dimension spDim = sp.getPreferredSize();
         spDim.height = preferredHeight;
-        spDim.height += margin.bottom + margin.top;//borderInsets.top + borderInsets.bottom;
+        spDim.height += margin.bottom + margin.top;
         sp.setPreferredSize(spDim);
         sp.setMinimumSize(spDim);
         sp.setMaximumSize(spDim);
@@ -168,11 +189,9 @@ public class Tools {
                     Rectangle textRect = editorPane.getUI().modelToView(editorPane, editorPane.getDocument().getLength());
                     int textLength = textRect.x + textRect.width;
                     int viewLength = viewport.getExtentSize().width;
-                    //System.out.println("Utilities.createSingleLineEditor(): spLength = "+sp.getSize().width+", viewLength = "+viewLength+", textLength = "+textLength+", viewPosition = "+viewPosition);
                     if (textLength < (viewPosition.x + viewLength)) {
                         viewPosition.x = Math.max(textLength - viewLength, 0);
                         viewport.setViewPosition(viewPosition);
-                        //System.out.println("Utilities.createSingleLineEditor(): setting new view position = "+viewPosition);
                     }
                 } catch (BadLocationException blex) {
                     Exceptions.printStackTrace(blex);
@@ -183,8 +202,6 @@ public class Tools {
 
     private static void adjustScrollPaneSize(JScrollPane sp, JEditorPane editorPane) {
         int height;
-        //logger.fine("createSingleLineEditor(): editorPane's margin = "+editorPane.getMargin());
-        //logger.fine("createSingleLineEditor(): editorPane's insets = "+editorPane.getInsets());
         Dimension prefSize = sp.getPreferredSize();
         Insets borderInsets = sp.getBorder().getBorderInsets(sp);//sp.getInsets();
         int vBorder = borderInsets.bottom + borderInsets.top;
@@ -192,17 +209,14 @@ public class Tools {
         if (eui != null) {
             height = eui.getLineHeight();
             if (height < eui.getLineAscent()) {
-                height = (eui.getLineAscent() * 4) / 3; // Hack for the case when line height = 1
+                height = (eui.getLineAscent() * 4) / 3;
             }
         } else {
             java.awt.Font font = editorPane.getFont();
             java.awt.FontMetrics fontMetrics = editorPane.getFontMetrics(font);
             height = fontMetrics.getHeight();
-            //logger.fine("createSingleLineEditor(): editor's font = "+font+" with metrics = "+fontMetrics+", leading = "+fontMetrics.getLeading());
-            //logger.fine("createSingleLineEditor(): font's height = "+height);
         }
         height += vBorder + getLFHeightAdjustment();
-        //height += 2; // 2 for border
         if (prefSize.height < height) {
             prefSize.height = height;
             sp.setPreferredSize(prefSize);
@@ -248,7 +262,6 @@ public class Tools {
 
         @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            //logger.fine("Delegate paintBorder("+c+", "+g+", "+x+", "+y+", "+width+", "+height+")");
             delegate.paintBorder(c, g, x, y, width, height);
         }
 

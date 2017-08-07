@@ -74,7 +74,7 @@ public class SnippetsViewer extends javax.swing.JPanel {
                 return label;
             }
         });
-        JComponent[] editorComponents = Tools.createSingleLineEditor(mimeType);
+        JComponent[] editorComponents = Tools.createEditorEditor(mimeType);
         JScrollPane sp = (JScrollPane) editorComponents[0];
         editorPane = (JEditorPane) editorComponents[1];
         editorPane.setEditable(false);
