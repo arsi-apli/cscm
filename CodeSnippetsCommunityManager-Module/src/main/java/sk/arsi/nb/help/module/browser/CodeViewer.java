@@ -31,7 +31,7 @@ public class CodeViewer extends TopComponent {
     public CodeViewer(DescriptionRecord description, String mimeType, ServerType serverType) {
         initComponents();
         setName(description.getDescription());
-        JComponent[] editorComponents = Tools.createSingleLineEditor(mimeType);
+        JComponent[] editorComponents = Tools.createEditorEditor(mimeType);
         JScrollPane sp = (JScrollPane) editorComponents[0];
         editorPane = (JEditorPane) editorComponents[1];
         editorPane.setEditable(false);

@@ -13,3 +13,4 @@
 ^CodeSnippetsCommunityManager-server/index$
 ^CodeSnippetsCommunityManager-server/src/main/resources/rebel\.xml$
 ^CodeSnippetsCommunityManager-Module/src/main/patches/org-netbeans-modules-editor-completion\.jar$
+^release$

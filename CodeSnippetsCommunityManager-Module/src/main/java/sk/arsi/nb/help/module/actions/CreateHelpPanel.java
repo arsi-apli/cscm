@@ -79,7 +79,7 @@ public class CreateHelpPanel extends javax.swing.JPanel {
             @Override
             public void run() {
 
-                JComponent[] editorComponents = Tools.createSingleLineEditor(mimeType);
+                JComponent[] editorComponents = Tools.createEditorEditor(mimeType);
                 JScrollPane sp = (JScrollPane) editorComponents[0];
                 editorPane = (JEditorPane) editorComponents[1];
                 jPanel1.add(sp);
