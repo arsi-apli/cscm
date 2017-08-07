@@ -63,7 +63,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;MimeRecord&gt;"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="reloadMime">
@@ -75,6 +75,9 @@
           <ResourceString bundle="sk/arsi/nb/help/module/browser/Bundle.properties" key="SnippetsBrowserTopComponent.reloadMime.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reloadMimeActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="reloadList">
       <Properties>
@@ -85,6 +88,9 @@
           <ResourceString bundle="sk/arsi/nb/help/module/browser/Bundle.properties" key="SnippetsBrowserTopComponent.reloadList.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reloadListActionPerformed"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
@@ -99,8 +105,11 @@
               <StringArray count="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="listMouseClickListener"/>
+          </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;DescriptionRecord&gt;"/>
           </AuxValues>
         </Component>
       </SubComponents>

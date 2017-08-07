@@ -67,4 +67,9 @@ public class MimeRecord implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return mime;
+    }
+
 }

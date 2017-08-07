@@ -301,7 +301,7 @@ public class Main {
                 TransferManager.findFullTextDescription((FindFullTextDescription) msg, ctx);
             } else if (msg instanceof GetMimeTypes) {
                 TransferManager.getMimeTypes((GetMimeTypes) msg, ctx);
-            } else if (msg instanceof GetMimeTypes) {
+            } else if (msg instanceof GetDescriptions) {
                 TransferManager.getDescriptions((GetDescriptions) msg, ctx);
             } else if (msg instanceof GetSingleHelpRecord) {
                 TransferManager.getSingleHelpRecord((GetSingleHelpRecord) msg, ctx);
