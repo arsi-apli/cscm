@@ -5,15 +5,24 @@
  */
 package sk.arsi.nb.help.module.browser;
 
+import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import sk.arsi.nb.help.module.client.NbDocClient;
 import sk.arsi.nb.help.module.client.ServerType;
+import sk.arsi.nb.help.transfer.DescriptionRecord;
+import sk.arsi.nb.help.transfer.MimeRecord;
 
 /**
  * Top component which displays something.
@@ -27,7 +36,7 @@ import sk.arsi.nb.help.module.client.ServerType;
         iconBase = "sk/arsi/nb/help/module/help_icon.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "explorer", openAtStartup = false)
+@TopComponent.Registration(mode = "explorer", openAtStartup = true)
 @ActionID(category = "Window", id = "sk.arsi.nb.help.module.browser.SnippetsBrowserTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
@@ -36,16 +45,42 @@ import sk.arsi.nb.help.module.client.ServerType;
 )
 @Messages({
     "CTL_SnippetsBrowserAction=Snippets browser",
-    "CTL_SnippetsBrowserTopComponent=Snippets browser",
+    "CTL_SnippetsBrowserTopComponent=Snippets",
     "HINT_SnippetsBrowserTopComponent="
 })
-public final class SnippetsBrowserTopComponent extends TopComponent implements ItemListener {
+public final class SnippetsBrowserTopComponent extends TopComponent implements ItemListener, DocumentListener {
+
+    private ServerType serverType;
+    private DescriptionRecord[] descriptions;
 
     public SnippetsBrowserTopComponent() {
         initComponents();
         setName(Bundle.CTL_SnippetsBrowserTopComponent());
         reloadList.setContentAreaFilled(false);
         reloadMime.setContentAreaFilled(false);
+    }
+
+    public void filterModel(DefaultComboBoxModel<DescriptionRecord> model, String filter) {
+        if (descriptions != null) {
+            if (!"".equals(filter)) {
+                for (DescriptionRecord description : descriptions) {
+                    if (!description.getDescription().toLowerCase().contains(filter.toLowerCase())) {
+                        if (model.getIndexOf(description) >= 0) {
+                            model.removeElement(description);
+                        }
+                    } else if (model.getIndexOf(description) == -1) {
+                        model.addElement(description);
+                    }
+                }
+            } else {
+                for (DescriptionRecord description : descriptions) {
+                    if (model.getIndexOf(description) == -1) {
+                        model.addElement(description);
+                    }
+                }
+            }
+
+        }
     }
 
     /**
@@ -68,10 +103,25 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
 
         reloadMime.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sk/arsi/nb/help/module/reload.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(reloadMime, org.openide.util.NbBundle.getMessage(SnippetsBrowserTopComponent.class, "SnippetsBrowserTopComponent.reloadMime.text")); // NOI18N
+        reloadMime.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reloadMimeActionPerformed(evt);
+            }
+        });
 
         reloadList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sk/arsi/nb/help/module/reload.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(reloadList, org.openide.util.NbBundle.getMessage(SnippetsBrowserTopComponent.class, "SnippetsBrowserTopComponent.reloadList.text")); // NOI18N
+        reloadList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reloadListActionPerformed(evt);
+            }
+        });
 
+        list.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listMouseClickListener(evt);
+            }
+        });
         jScrollPane1.setViewportView(list);
 
         filter.setText(org.openide.util.NbBundle.getMessage(SnippetsBrowserTopComponent.class, "SnippetsBrowserTopComponent.filter.text")); // NOI18N
@@ -105,11 +155,35 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void listMouseClickListener(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClickListener
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            DescriptionRecord rec = list.getSelectedValue();
+            MimeRecord mimeType = (MimeRecord) mime.getSelectedItem();
+            ServerType sType = (ServerType) server.getSelectedItem();
+            if (rec != null && mimeType != null && sType != null) {
+                CodeViewer codeViewer = new CodeViewer(rec, mimeType.getMime(), sType);
+                codeViewer.open();
+                codeViewer.requestActive();
+            }
+        }
+    }//GEN-LAST:event_listMouseClickListener
+
+    private void reloadMimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadMimeActionPerformed
+        // TODO add your handling code here:
+        itemStateChanged(new ItemEvent(server, 0, server.getSelectedItem(), ItemEvent.SELECTED));
+    }//GEN-LAST:event_reloadMimeActionPerformed
+
+    private void reloadListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadListActionPerformed
+        // TODO add your handling code here:
+        itemStateChanged(new ItemEvent(mime, 0, mime.getSelectedItem(), ItemEvent.SELECTED));
+    }//GEN-LAST:event_reloadListActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField filter;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList<String> list;
-    private javax.swing.JComboBox<String> mime;
+    private javax.swing.JList<DescriptionRecord> list;
+    private javax.swing.JComboBox<MimeRecord> mime;
     private javax.swing.JButton reloadList;
     private javax.swing.JButton reloadMime;
     private javax.swing.JComboBox<ServerType> server;
@@ -118,6 +192,26 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
     public void componentOpened() {
         server.addItemListener(this);
         mime.addItemListener(this);
+        serverType = (ServerType) server.getSelectedItem();
+        if (serverType != null) {
+            Object allMimeTypes = NbDocClient.getAllMimeTypes(serverType);
+            if (allMimeTypes instanceof MimeRecord[]) {
+                mime.setModel(new DefaultComboBoxModel<>((MimeRecord[]) allMimeTypes));
+            } else {
+                mime.setModel(new DefaultComboBoxModel<>());
+            }
+        }
+        list.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof DescriptionRecord) {
+                    label.setText(((DescriptionRecord) value).getDescription());
+                }
+                return label;
+            }
+        });
+        filter.getDocument().addDocumentListener(this);
 
     }
 
@@ -125,6 +219,7 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
     public void componentClosed() {
         server.removeItemListener(this);
         mime.removeItemListener(this);
+        filter.getDocument().removeDocumentListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -143,10 +238,50 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             if (e.getSource().equals(server)) {
-                ServerType serverType = (ServerType) e.getItem();
+                serverType = (ServerType) e.getItem();
+                if (serverType != null) {
+                    Object allMimeTypes = NbDocClient.getAllMimeTypes(serverType);
+                    if (allMimeTypes instanceof MimeRecord[]) {
+                        mime.setModel(new DefaultComboBoxModel<>((MimeRecord[]) allMimeTypes));
+                        if (((MimeRecord[]) allMimeTypes).length > 0) {
+                            itemStateChanged(new ItemEvent(mime, 0, mime.getSelectedItem(), ItemEvent.SELECTED));
+                        }
+                    } else {
+                        mime.setModel(new DefaultComboBoxModel<>());
+                        list.setModel(new DefaultComboBoxModel<>());
+                    }
+                } else {
+                    mime.setModel(new DefaultComboBoxModel<>());
+                    list.setModel(new DefaultComboBoxModel<>());
+                }
             } else if (e.getSource().equals(mime)) {
-                String mimeString = (String) e.getItem();
+                MimeRecord mimeRecord = (MimeRecord) e.getItem();
+                if (mimeRecord != null) {
+                    descriptions = NbDocClient.getDescriptions(mimeRecord.getMime(), serverType);
+                    if (descriptions instanceof DescriptionRecord[]) {
+                        list.setModel(new DefaultComboBoxModel<>(descriptions));
+                    } else {
+                        list.setModel(new DefaultComboBoxModel<>());
+                    }
+                } else {
+                    list.setModel(new DefaultComboBoxModel<>());
+                }
             }
         }
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        filterModel((DefaultComboBoxModel<DescriptionRecord>) list.getModel(), filter.getText());
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        filterModel((DefaultComboBoxModel<DescriptionRecord>) list.getModel(), filter.getText());
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        filterModel((DefaultComboBoxModel<DescriptionRecord>) list.getModel(), filter.getText());
     }
 }

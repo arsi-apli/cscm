@@ -38,6 +38,7 @@ import sk.arsi.nb.help.server.local.LocalTransferManager;
 import sk.arsi.nb.help.transfer.AccountTestResult;
 import sk.arsi.nb.help.transfer.AddRank;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.DescriptionRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
@@ -191,6 +192,27 @@ public class NbDocClient {
         }
         return null;
     }
+
+    public static DescriptionRecord[] getDescriptions(String mime, ServerType serverType) {
+        try {
+            Socket clientSocket = connect(serverType);
+            return (DescriptionRecord[]) sendAndReceive(clientSocket, new GetDescriptions(mime), serverType);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Object getSingleHelpRecord(int id, ServerType serverType) {
+        try {
+            Socket clientSocket = connect(serverType);
+            return sendAndReceive(clientSocket, new GetSingleHelpRecord(id), serverType);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
 
     public static Object getByFullTextDescription(String name, ServerType serverType, String mimeType) {
         return getByFullTextDescription(name, serverType, mimeType, NbPreferences.forModule(CommunitydocPanel.class).getInt(NbDocClient.MAX_DESCRIPTION_RESULTS, 25));

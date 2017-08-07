@@ -53,7 +53,7 @@ public class CreateHelpPanel extends javax.swing.JPanel {
     private JEditorPane editorPane;
     private final String mimeTypeType;
     private HelpRecordProxy[] duplicateCodeArray;
-    private static final ExecutorService pool = Executors.newFixedThreadPool(1);
+    public static final ExecutorService pool = Executors.newFixedThreadPool(1);
     private HelpRecordProxy[] duplicateDescriptionsArray;
     private static ImageIcon iconMaster;
     private static ImageIcon iconTeam;
