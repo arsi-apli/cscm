@@ -162,9 +162,15 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
             MimeRecord mimeType = (MimeRecord) mime.getSelectedItem();
             ServerType sType = (ServerType) server.getSelectedItem();
             if (rec != null && mimeType != null && sType != null) {
-                CodeViewer codeViewer = new CodeViewer(rec, mimeType.getMime(), sType);
-                codeViewer.open();
-                codeViewer.requestActive();
+                CodeViewer codeViewer = CodeViewer.ACTIVE.get(mimeType.getMime() + rec.getDescription() + sType);
+                if (codeViewer == null) {
+                    codeViewer = new CodeViewer(rec, mimeType.getMime(), sType);
+                    codeViewer.open();
+                    codeViewer.requestActive();
+                } else {
+                    codeViewer.requestActive();
+                }
+
             }
         }
     }//GEN-LAST:event_listMouseClickListener

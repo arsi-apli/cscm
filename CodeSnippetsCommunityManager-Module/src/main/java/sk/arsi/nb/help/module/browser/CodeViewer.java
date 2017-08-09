@@ -5,6 +5,8 @@
  */
 package sk.arsi.nb.help.module.browser;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
@@ -24,12 +26,16 @@ import sk.arsi.nb.help.transfer.HelpRecord;
 public class CodeViewer extends TopComponent {
 
     private JEditorPane editorPane;
+    public static final Map<String, CodeViewer> ACTIVE = new HashMap<>();
+    private final String key;
 
     /**
      * Creates new form CodeViewer
      */
     public CodeViewer(DescriptionRecord description, String mimeType, ServerType serverType) {
         initComponents();
+        key = mimeType + description.getDescription() + serverType;
+        ACTIVE.put(key, this);
         setName(description.getDescription());
         JComponent[] editorComponents = Tools.createEditorEditor(mimeType);
         JScrollPane sp = (JScrollPane) editorComponents[0];
@@ -54,15 +60,21 @@ public class CodeViewer extends TopComponent {
                     classes.setText("");
                     mime.setText(mimeType);
                 }
+                loading.setVisible(false);
             }
         };
         CreateHelpPanel.pool.execute(runnable);
     }
 
     @Override
+    public void componentClosed() {
+        ACTIVE.remove(key);
+    }
+    @Override
     public int getPersistenceType() {
         return PERSISTENCE_NEVER; //To change body of generated methods, choose Tools | Templates.
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -82,6 +94,7 @@ public class CodeViewer extends TopComponent {
         keys = new javax.swing.JLabel();
         classes = new javax.swing.JLabel();
         author = new javax.swing.JLabel();
+        loading = new javax.swing.JLabel();
         codePanel = new javax.swing.JPanel();
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(CodeViewer.class, "CodeViewer.jLabel1.text")); // NOI18N
@@ -100,6 +113,8 @@ public class CodeViewer extends TopComponent {
 
         org.openide.awt.Mnemonics.setLocalizedText(author, org.openide.util.NbBundle.getMessage(CodeViewer.class, "CodeViewer.author.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(loading, org.openide.util.NbBundle.getMessage(CodeViewer.class, "CodeViewer.loading.text")); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -116,8 +131,11 @@ public class CodeViewer extends TopComponent {
                     .addComponent(mime)
                     .addComponent(keys)
                     .addComponent(classes)
-                    .addComponent(author))
-                .addContainerGap(1172, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(author)
+                        .addGap(460, 460, 460)
+                        .addComponent(loading)))
+                .addContainerGap(691, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,7 +155,8 @@ public class CodeViewer extends TopComponent {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(author))
+                    .addComponent(author)
+                    .addComponent(loading))
                 .addContainerGap())
         );
 
@@ -154,8 +173,9 @@ public class CodeViewer extends TopComponent {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(codePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(codePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -170,6 +190,7 @@ public class CodeViewer extends TopComponent {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel keys;
+    private javax.swing.JLabel loading;
     private javax.swing.JLabel mime;
     // End of variables declaration//GEN-END:variables
 }
