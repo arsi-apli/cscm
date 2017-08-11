@@ -57,6 +57,7 @@ import sk.arsi.nb.help.server.config.ConfigManager;
 import sk.arsi.nb.help.server.lucene.LuceneManager;
 import sk.arsi.nb.help.transfer.AddRank;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
@@ -305,6 +306,8 @@ public class Main {
                 TransferManager.getDescriptions((GetDescriptions) msg, ctx);
             } else if (msg instanceof GetSingleHelpRecord) {
                 TransferManager.getSingleHelpRecord((GetSingleHelpRecord) msg, ctx);
+            } else if (msg instanceof DeleteSnippet) {
+                TransferManager.deleteHelpRecord((DeleteSnippet) msg, ctx);
             } else {
                 ReferenceCountUtil.release(msg);
                 ctx.channel().close();

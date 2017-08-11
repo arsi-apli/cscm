@@ -6,21 +6,33 @@
 package sk.arsi.nb.help.module.browser;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
+import sk.arsi.nb.help.module.client.CommunitydocPanel;
 import sk.arsi.nb.help.module.client.NbDocClient;
 import sk.arsi.nb.help.module.client.ServerType;
+import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.DescriptionRecord;
 import sk.arsi.nb.help.transfer.MimeRecord;
 
@@ -48,16 +60,29 @@ import sk.arsi.nb.help.transfer.MimeRecord;
     "CTL_SnippetsBrowserTopComponent=Snippets",
     "HINT_SnippetsBrowserTopComponent="
 })
-public final class SnippetsBrowserTopComponent extends TopComponent implements ItemListener, DocumentListener {
+public final class SnippetsBrowserTopComponent extends TopComponent implements ItemListener, DocumentListener, ActionListener {
 
     private ServerType serverType;
     private DescriptionRecord[] descriptions;
+    private final JPopupMenu popupMenu = new JPopupMenu();
+    private final JMenuItem delete = new JMenuItem("Delete");
+    private static ImageIcon iconOwner;
+    private static ImageIcon iconOther;
 
     public SnippetsBrowserTopComponent() {
         initComponents();
         setName(Bundle.CTL_SnippetsBrowserTopComponent());
         reloadList.setContentAreaFilled(false);
         reloadMime.setContentAreaFilled(false);
+        popupMenu.add(delete);
+        delete.addActionListener(this);
+        if (iconOwner == null) {
+            iconOwner = ImageUtilities.loadImageIcon("sk/arsi/nb/help/module/owner.gif", false); // NOI18N
+        }
+        if (iconOther == null) {
+            iconOther = ImageUtilities.loadImageIcon("sk/arsi/nb/help/module/globe.gif", false); // NOI18N
+        }
+
     }
 
     public void filterModel(DefaultComboBoxModel<DescriptionRecord> model, String filter) {
@@ -157,7 +182,7 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
 
     private void listMouseClickListener(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClickListener
         // TODO add your handling code here:
-        if (evt.getClickCount() == 2) {
+        if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
             DescriptionRecord rec = list.getSelectedValue();
             MimeRecord mimeType = (MimeRecord) mime.getSelectedItem();
             ServerType sType = (ServerType) server.getSelectedItem();
@@ -172,6 +197,16 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
                 }
 
             }
+        } else if (evt.getButton() == MouseEvent.BUTTON3 && evt.getClickCount() == 1) {
+            list.setSelectedIndex(list.locationToIndex(evt.getPoint()));
+            DescriptionRecord rec = list.getSelectedValue();
+            String email = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.EMAIL, "");
+            if (rec != null && email.equalsIgnoreCase(rec.getEmail())) {
+                delete.setEnabled(true);
+            } else {
+                delete.setEnabled(false);
+            }
+            popupMenu.show(list, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_listMouseClickListener
 
@@ -207,12 +242,18 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
                 mime.setModel(new DefaultComboBoxModel<>());
             }
         }
-        list.setCellRenderer(new DefaultListCellRenderer() {
+         list.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof DescriptionRecord) {
                     label.setText(((DescriptionRecord) value).getDescription());
+                    String email = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.EMAIL, "");
+                    if (email.equalsIgnoreCase(((DescriptionRecord) value).getEmail())) {
+                        label.setIcon(iconOwner);
+                    } else {
+                        label.setIcon(iconOther);
+                    }
                 }
                 return label;
             }
@@ -290,4 +331,20 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
     public void changedUpdate(DocumentEvent e) {
         filterModel((DefaultComboBoxModel<DescriptionRecord>) list.getModel(), filter.getText());
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        DescriptionRecord rec = list.getSelectedValue();
+        ServerType sType = (ServerType) server.getSelectedItem();
+        String email = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.EMAIL, "");
+        String password = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.PASSWORD_HASH, "");
+        NotifyDescriptor nd = new NotifyDescriptor.Confirmation("Are you sure to delete this snippet?", "Delete..", NotifyDescriptor.YES_NO_OPTION);
+        Object notify = DialogDisplayer.getDefault().notify(nd);
+        if (notify.equals(NotifyDescriptor.YES_OPTION)) {
+            NbDocClient.deleteHelp(new DeleteSnippet(rec.getId(), email, password), sType);
+            itemStateChanged(new ItemEvent(mime, 0, mime.getSelectedItem(), ItemEvent.SELECTED));
+        }
+    }
+
+
 }

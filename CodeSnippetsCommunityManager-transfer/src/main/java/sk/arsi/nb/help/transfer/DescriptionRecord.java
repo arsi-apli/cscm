@@ -16,13 +16,15 @@ public class DescriptionRecord implements Serializable {
 
     private int id;
     private String description;
+    private String email;
 
     public DescriptionRecord() {
     }
 
-    public DescriptionRecord(int id, String description) {
+    public DescriptionRecord(int id, String description, String email) {
         this.id = id;
         this.description = description;
+        this.email = email;
     }
 
     public int getId() {
@@ -64,6 +66,14 @@ public class DescriptionRecord implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

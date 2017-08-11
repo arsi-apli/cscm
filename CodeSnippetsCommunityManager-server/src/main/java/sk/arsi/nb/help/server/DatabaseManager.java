@@ -260,6 +260,22 @@ public class DatabaseManager {
         manager.refresh(tmp);
     }
 
+    public static boolean deleteHelp(int id, String email, String password) {
+        JpaEntityManager manager = DatabaseManager.findManager();
+        Helps help = manager.find(Helps.class, id);
+        if (help != null && help.getUser() != null && help.getUser().getEmail().equalsIgnoreCase(email) && help.getUser().getPassword().equals(password)) {
+            EntityTransaction transaction = manager.getTransaction();
+            if (!transaction.isActive()) {
+                transaction.begin();
+            }
+            manager.remove(help);
+            manager.flush();
+            transaction.commit();
+            return true;
+        }
+        return false;
+    }
+
     public static void addRankToDb(AddRank msg, Helps help) {
         JpaEntityManager manager = DatabaseManager.findManager();
         EntityTransaction transaction = manager.getTransaction();

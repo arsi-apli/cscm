@@ -17,6 +17,7 @@ import sk.arsi.nb.help.server.db.Mimetype;
 import sk.arsi.nb.help.server.db.Users;
 import sk.arsi.nb.help.server.lucene.LuceneManager;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.DescriptionRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
@@ -116,6 +117,10 @@ public class LocalTransferManager {
 
     }
 
+    public static Status deleteHelpRecord(DeleteSnippet msg) {
+        return new Status(DatabaseManager.deleteHelp(msg.getSnippetId(), msg.getEmail(), msg.getPasswordHash()));
+    }
+
     public static HelpRecord[] findFullTextCode(FindFullTextCode msg) {
         List<HelpRecord> records = new ArrayList<>();
         try {
@@ -173,7 +178,7 @@ public class LocalTransferManager {
         List<Helps> helps = DatabaseManager.findHelpsByMimeType(msg.getMimeType());
         List<DescriptionRecord> records = new ArrayList<>();
         for (Helps help : helps) {
-            records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription()));
+            records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription(), help.getUser().getEmail()));
         }
         return records.toArray(new DescriptionRecord[records.size()]);
     }

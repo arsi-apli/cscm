@@ -29,6 +29,7 @@ import sk.arsi.nb.help.server.mail.MailTools;
 import sk.arsi.nb.help.transfer.AccountTestResult;
 import sk.arsi.nb.help.transfer.AddRank;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.DescriptionRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
@@ -169,6 +170,23 @@ public class TransferManager {
         };
         sqlPool.execute(runnable);
 
+    }
+
+    public static void deleteHelpRecord(DeleteSnippet msg, ChannelHandlerContext ctx) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                boolean ok = DatabaseManager.deleteHelp(msg.getSnippetId(), msg.getEmail(), msg.getPasswordHash());
+                if (ok) {
+                    ctx.channel().writeAndFlush(new Status(true));
+                } else {
+                    ctx.channel().writeAndFlush(new Status(false));
+                }
+                ReferenceCountUtil.release(msg);
+                ctx.channel().close();
+            }
+        };
+        sqlPool.execute(runnable);
     }
 
     public static void registerUser(final RegisterUser msg, final ChannelHandlerContext ctx) {
@@ -350,7 +368,7 @@ public class TransferManager {
                 List<Helps> helps = DatabaseManager.findHelpsByMimeType(msg.getMimeType());
                 List<DescriptionRecord> records = new ArrayList<>();
                 for (Helps help : helps) {
-                    records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription()));
+                    records.add(new DescriptionRecord(help.getIdhelps(), help.getDescription(), help.getUser().getEmail()));
                 }
                 ctx.channel().writeAndFlush(records.toArray(new DescriptionRecord[records.size()]));
                 ReferenceCountUtil.release(msg);
