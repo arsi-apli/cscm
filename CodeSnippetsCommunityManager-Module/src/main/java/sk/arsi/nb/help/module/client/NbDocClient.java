@@ -38,6 +38,7 @@ import sk.arsi.nb.help.server.local.LocalTransferManager;
 import sk.arsi.nb.help.transfer.AccountTestResult;
 import sk.arsi.nb.help.transfer.AddRank;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
+import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.DescriptionRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
@@ -156,6 +157,8 @@ public class NbDocClient {
                     return LocalTransferManager.getDescriptions((GetDescriptions) toSend);
                 } else if (toSend instanceof GetSingleHelpRecord) {
                     return LocalTransferManager.getSingleHelpRecord((GetSingleHelpRecord) toSend);
+                } else if (toSend instanceof DeleteSnippet) {
+                    return LocalTransferManager.deleteHelpRecord((DeleteSnippet) toSend);
                 }
 
         }
@@ -314,6 +317,15 @@ public class NbDocClient {
         try {
             Socket clientSocket = connect(serverType);
             return (Status) sendAndReceive(clientSocket, record, serverType);
+        } catch (Exception ex) {
+        }
+        return null;
+    }
+
+    public static Status deleteHelp(DeleteSnippet delete, ServerType serverType) {
+        try {
+            Socket clientSocket = connect(serverType);
+            return (Status) sendAndReceive(clientSocket, delete, serverType);
         } catch (Exception ex) {
         }
         return null;
