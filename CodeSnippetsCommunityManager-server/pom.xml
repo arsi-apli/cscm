@@ -23,7 +23,6 @@
             <groupId>org.ini4j</groupId>
             <artifactId>ini4j</artifactId>
             <version>0.5.4</version>
-            <classifier>jdk14</classifier>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -70,6 +69,11 @@
             <version>1.4.196</version>
         </dependency>
         <!-- END - Lucene Dependencies -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

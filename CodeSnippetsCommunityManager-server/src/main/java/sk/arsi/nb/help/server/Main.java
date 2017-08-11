@@ -53,6 +53,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.lucene.index.IndexWriter;
+import sk.arsi.nb.help.server.backup.PublicDatabaseBackup;
 import sk.arsi.nb.help.server.config.ConfigManager;
 import sk.arsi.nb.help.server.lucene.LuceneManager;
 import sk.arsi.nb.help.transfer.AddRank;
@@ -222,6 +223,8 @@ public class Main {
         DatabaseManager.createMimeIfNotExist("text/x-twig");
         DatabaseManager.createMimeIfNotExist("text/x-yaml");
         DatabaseManager.createMimeIfNotExist("text/html");
+
+        PublicDatabaseBackup.startPublicBackup();
 
         System.setProperty("io.netty.recycler.maxCapacity.default", "0");
         System.setProperty("io.netty.allocator.pageSize", "4096");

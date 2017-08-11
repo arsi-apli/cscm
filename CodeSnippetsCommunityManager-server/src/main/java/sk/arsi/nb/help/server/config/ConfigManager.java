@@ -43,10 +43,18 @@ public class ConfigManager {
     public static final String ADMIN_SEND_DAILY_STATISTICS = "SEND_DAILY_STATISTICS";
     public static final String DATABASE_DIRECTORY = "DIRECTORY";
 
+    public static final String BACKUP_ENABLE_PUBLIC_BACKUP = "ENABLE_PUBLIC_BACKUP";
+    public static final String BACKUP_BACKUP_PATH = "BACKUP_PATH";
+    public static final String BACKUP_SFTP_HOST = "SFTP_HOST";
+    public static final String BACKUP_SFTP_USER = "SFTP_USER";
+    public static final String BACKUP_SFTP_PASSWORD = "SFTP_PASSWORD";
+    public static final String BACKUP_SFTP_DIRECTORY = "SFTP_DIRECTORY";
+
     public static Profile.Section SMTP;
     public static Profile.Section SERVER;
     public static Profile.Section ADMIN;
     public static Profile.Section DATABASE;
+    public static Profile.Section BACKUP;
 
     public static final void loadConfig(String path) throws IOException {
         Ini ini = new Ini();
@@ -62,6 +70,8 @@ public class ConfigManager {
                 ADMIN = e.getValue();
             } else if ("DATABASE".equalsIgnoreCase(e.getKey())) {
                 DATABASE = e.getValue();
+            } else if ("BACKUP".equalsIgnoreCase(e.getKey())) {
+                BACKUP = e.getValue();
             }
         }
     }
