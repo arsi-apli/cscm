@@ -14,7 +14,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>3.13</version>
+                <version>4.2-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
                     <cluster>ide</cluster>
@@ -56,10 +56,14 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                    <finalName>${module.name}</finalName>
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
         </plugins>
+        <directory>${module.target}</directory>
+        <finalName>${module.name}</finalName>
+     
     </build>
     <repositories>
         <repository>
@@ -210,6 +214,10 @@
                 <exclusion>
                     <groupId>org.ini4j</groupId>
                     <artifactId>ini4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jcraft</groupId>
+                    <artifactId>jsch</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
