@@ -5,6 +5,79 @@
     <artifactId>CodeSnippetsCommunityManager</artifactId>
     <version>01.01</version>
     <packaging>pom</packaging>
+    <profiles>
+        <profile>
+            <id>DEFAULT</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <nb.version>RELEASE81</nb.version>
+                <transfer.version>01.02</transfer.version>
+                <parent.version>01.01</parent.version>
+                <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
+                <module.target>${basedir}/target</module.target>
+            </properties>
+        </profile>
+        <profile>
+            <id>NETBEANS81</id>
+            <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <nb.version>RELEASE81</nb.version>
+                <transfer.version>01.02</transfer.version>
+                <parent.version>01.01</parent.version>
+                <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
+                <module.target>${basedir}/../NB-MODULE-${project.version}-${nb.version}-target</module.target>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>extra</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>autoupdate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>NETBEANS82</id>
+            <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <nb.version>RELEASE82</nb.version>
+                <transfer.version>01.02</transfer.version>
+                <parent.version>01.01</parent.version>
+                <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
+                <module.target>${basedir}/../NB-MODULE-${project.version}-${nb.version}-target</module.target>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>extra</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>autoupdate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <modules>
         <module>CodeSnippetsCommunityManager-transfer</module>
         <module>CodeSnippetsCommunityManager-server</module>
@@ -16,5 +89,7 @@
         <nb.version>RELEASE81</nb.version>
         <transfer.version>01.02</transfer.version>
         <parent.version>01.01</parent.version>
+        <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
+        <module.target>${basedir}/target</module.target>
     </properties>
 </project>

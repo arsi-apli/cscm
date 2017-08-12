@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-Create NB site</actionName>
+            <displayName>Create NB site</displayName>
+            <goals>
+                <goal>nbm:autoupdate</goal>
+            </goals>
+            <properties>
+                <jpda.listen>maven</jpda.listen>
+            </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-Upload</actionName>
+            <displayName>Upload</displayName>
+            <goals>
+                <goal>wagon:upload</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Upload-single</actionName>
+            <displayName>Upload-single</displayName>
+            <goals>
+                <goal>wagon:upload-single</goal>
+                <goal>-X</goal>
+            </goals>
+        </action>
+    </actions>
