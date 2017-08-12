@@ -60,6 +60,18 @@
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>sk.arsi</groupId>
+                <artifactId>CodeSnippetsCommunityManager-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <serverId>server.arsi.sk</serverId>
+                    <sftpUrl>server.arsi.sk</sftpUrl>
+                    <sftpPath>/var/www/html/cscm/${nb.version}</sftpPath>
+                    <netbeansSiteDir>${module.target}/netbeans_site</netbeansSiteDir>
+                </configuration>
+                
+            </plugin>
         </plugins>
         <directory>${module.target}</directory>
         <finalName>${module.name}</finalName>

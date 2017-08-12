@@ -83,6 +83,7 @@
         <module>CodeSnippetsCommunityManager-server</module>
         <module>CodeSnippetsCommunityManager-nb-patch</module>
         <module>CodeSnippetsCommunityManager-Module</module>
+        <module>CodeSnippetsCommunityManager-maven-plugin</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
