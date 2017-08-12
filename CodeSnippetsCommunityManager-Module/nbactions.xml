@@ -6,23 +6,14 @@
             <goals>
                 <goal>nbm:autoupdate</goal>
             </goals>
-            <properties>
-                <jpda.listen>maven</jpda.listen>
-            </properties>
         </action>
         <action>
-            <actionName>CUSTOM-Upload</actionName>
-            <displayName>Upload</displayName>
+            <actionName>CUSTOM-Upload to update site</actionName>
+            <displayName>Upload to update site</displayName>
             <goals>
-                <goal>wagon:upload</goal>
+                <goal>cscm:updatesite</goal>
             </goals>
         </action>
-        <action>
-            <actionName>CUSTOM-Upload-single</actionName>
-            <displayName>Upload-single</displayName>
-            <goals>
-                <goal>wagon:upload-single</goal>
-                <goal>-X</goal>
-            </goals>
-        </action>
+        
+        
     </actions>
