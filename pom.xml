@@ -16,7 +16,7 @@
                 <nb.version>RELEASE81</nb.version>
                 <transfer.version>01.02</transfer.version>
                 <parent.version>01.01</parent.version>
-                <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
+                <module.name>CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}</module.name>
                 <module.target>${basedir}/target</module.target>
             </properties>
         </profile>
@@ -27,8 +27,8 @@
                 <nb.version>RELEASE81</nb.version>
                 <transfer.version>01.02</transfer.version>
                 <parent.version>01.01</parent.version>
-                <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
-                <module.target>${basedir}/../NB-MODULE-${project.version}-${nb.version}-target</module.target>
+                <module.name>CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}</module.name>
+                <module.target>${basedir}/../NB-MODULE-${nb.module.version}-${nb.version}-target</module.target>
             </properties>
             <build>
                 <plugins>
@@ -45,6 +45,19 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>sk.arsi</groupId>
+                        <artifactId>CodeSnippetsCommunityManager-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <configuration>
+                            
+                            <serverId>server.arsi.sk</serverId>
+                            <sftpUrl>server.arsi.sk</sftpUrl>
+                            <sftpPath>/var/www/html/cscm/${nb.version}</sftpPath>
+                            <netbeansSiteDir>${basedir}/NB-MODULE-${nb.module.version}-${nb.version}-target/netbeans_site</netbeansSiteDir>
+                        </configuration>
+                
+                    </plugin>
                     
                 </plugins>
             </build>
@@ -56,8 +69,8 @@
                 <nb.version>RELEASE82</nb.version>
                 <transfer.version>01.02</transfer.version>
                 <parent.version>01.01</parent.version>
-                <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
-                <module.target>${basedir}/../NB-MODULE-${project.version}-${nb.version}-target</module.target>
+                <module.name>CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}</module.name>
+                <module.target>${basedir}/../NB-MODULE-${nb.module.version}-${nb.version}-target</module.target>
             </properties>
             <build>
                 <plugins>
@@ -73,6 +86,41 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>sk.arsi</groupId>
+                        <artifactId>CodeSnippetsCommunityManager-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <configuration>
+                            <releases>
+                                <release>
+                                    <serverId>server.arsi.sk</serverId>
+                                    <sftpUrl>server.arsi.sk</sftpUrl>
+                                    <sftpPath>/root/cscm/${nb.version}</sftpPath>
+                                    <outFileName>SCSM-${release.version}-${nb.version}</outFileName>
+                                    <subDirs>
+                                        <SubDir>
+                                            <path>server</path>
+                                            <files>
+                                                <file>${basedir}/CodeSnippetsCommunityManager-server/src/main/java/sk/arsi/nb/help/server/config/config.ini</file>
+                                                <file>${basedir}/CodeSnippetsCommunityManager-server/target/CodeSnippetsServer.jar</file>
+                                            </files>
+                                        </SubDir>
+                                        <SubDir>
+                                            <path>nb-module</path>
+                                            <files>
+                                                <file>${basedir}/NB-MODULE-${nb.module.version}-${nb.version}-target/CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}.nbm</file>
+                                            </files>
+                                        </SubDir>
+                                    </subDirs>
+                                </release>
+                            </releases>
+                            <serverId>server.arsi.sk</serverId>
+                            <sftpUrl>server.arsi.sk</sftpUrl>
+                            <sftpPath>/var/www/html/cscm/${nb.version}</sftpPath>
+                            <netbeansSiteDir>${basedir}/NB-MODULE-${nb.module.version}-${nb.version}-target/netbeans_site</netbeansSiteDir>
+                        </configuration>
+                
                     </plugin>
                 </plugins>
             </build>
@@ -88,8 +136,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nb.version>RELEASE81</nb.version>
+        <nb.module.version>01.09</nb.module.version>
         <transfer.version>01.02</transfer.version>
         <parent.version>01.01</parent.version>
+        <release.version>BETA22</release.version>
         <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>
         <module.target>${basedir}/target</module.target>
     </properties>
