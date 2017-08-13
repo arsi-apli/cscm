@@ -13,7 +13,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 
@@ -26,9 +25,6 @@ import org.apache.maven.settings.Settings;
         aggregator = true,
         requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
 public class UpdateSiteMojo extends AbstractMojo {
-
-    @Parameter(required = true, readonly = true, property = "project")
-    private MavenProject project;
 
     @Parameter(required = true, readonly = true, property = "serverId")
     private String serverId;
