@@ -27,7 +27,7 @@ public class SftpLoader {
     }
 
     public void connect() throws JSchException {
-
+        System.out.println("Connecting sftp: " + host);
         JSch jsch = new JSch();
         session = jsch.getSession(userName, host);
         session.setPassword(password);
@@ -37,11 +37,13 @@ public class SftpLoader {
         session.connect();
         channel = (ChannelSftp) session.openChannel("sftp");
         channel.connect();
+        System.out.println("Connected " + host);
     }
 
     public void disconnect() {
         channel.disconnect();
         session.disconnect();
+        System.out.println("Disconnected " + host);
     }
 
     private void cdOrCreateDirs(String remoteDir) throws SftpException {
@@ -52,8 +54,10 @@ public class SftpLoader {
                 channel.stat(nextdir);
             } catch (Exception e) {
                 channel.mkdir(nextdir);
+                System.out.println(host + " mkdir: " + nextdir);
             }
             channel.cd(nextdir);
+            System.out.println(host + " cd: " + nextdir);
         }
     }
 
@@ -78,6 +82,7 @@ public class SftpLoader {
                     attrs = channel.stat(localChildFile.getName());
                 } catch (Exception e) {
                     channel.mkdir(localChildFile.getName());
+                    System.out.println(host + " mkdir: " + localChildFile.getName());
                 }
 
                 // repeat (recursive)
@@ -89,6 +94,7 @@ public class SftpLoader {
     }
 
     public void transferFileToRemote(String localFile, String remoteDir) throws SftpException, FileNotFoundException {
+        System.out.println(host + " Transfer: " + localFile + " to: " + remoteDir);
         channel.cd(remoteDir);
         channel.put(new FileInputStream(new File(localFile)), new File(localFile).getName(), ChannelSftp.OVERWRITE);
     }
@@ -108,5 +114,14 @@ public class SftpLoader {
         }
         bis.close();
         bos.close();
+    }
+
+    void transferSingleFile(byte[] toByteArray, String outFileName, String remoteDir) throws SftpException, IOException {
+        channel.cd("/");
+        cdOrCreateDirs(remoteDir);
+        ByteArrayInputStream bis = new ByteArrayInputStream(toByteArray);
+        System.out.println(host + " Transfer: " + outFileName + " to: " + remoteDir);
+        channel.put(bis, outFileName, ChannelSftp.OVERWRITE);
+        bis.close();
     }
 }
