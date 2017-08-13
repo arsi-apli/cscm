@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-Upload autoupdate site</actionName>
+            <displayName>Upload autoupdate site</displayName>
+            <goals>
+                <goal>cscm:updatesite</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Release zip</actionName>
+            <displayName>Release zip</displayName>
+            <goals>
+                <goal>cscm:releasezip</goal>
+            </goals>
+        </action>
+    </actions>
