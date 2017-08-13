@@ -50,7 +50,29 @@
                         <artifactId>CodeSnippetsCommunityManager-maven-plugin</artifactId>
                         <version>1.0</version>
                         <configuration>
-                            
+                            <releases>
+                                <release>
+                                    <serverId>frs.sourceforge.net</serverId>
+                                    <sftpUrl>frs.sourceforge.net</sftpUrl>
+                                    <sftpPath>/home/frs/project/cscm/</sftpPath>
+                                    <outFileName>SCSM-${release.version}-${nb.version}</outFileName>
+                                    <subDirs>
+                                        <SubDir>
+                                            <path>server</path>
+                                            <files>
+                                                <file>${basedir}/CodeSnippetsCommunityManager-server/src/main/java/sk/arsi/nb/help/server/config/config.ini</file>
+                                                <file>${basedir}/CodeSnippetsCommunityManager-server/target/CodeSnippetsServer.jar</file>
+                                            </files>
+                                        </SubDir>
+                                        <SubDir>
+                                            <path>nb-module</path>
+                                            <files>
+                                                <file>${basedir}/NB-MODULE-${nb.module.version}-${nb.version}-target/CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}.nbm</file>
+                                            </files>
+                                        </SubDir>
+                                    </subDirs>
+                                </release>
+                            </releases>
                             <serverId>server.arsi.sk</serverId>
                             <sftpUrl>server.arsi.sk</sftpUrl>
                             <sftpPath>/var/www/html/cscm/${nb.version}</sftpPath>
