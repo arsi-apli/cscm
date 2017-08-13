@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
         <action>
-            <actionName>CUSTOM-Create NB site</actionName>
-            <displayName>Create NB site</displayName>
-            <goals>
-                <goal>nbm:autoupdate</goal>
-            </goals>
-        </action>
-        <action>
             <actionName>CUSTOM-Upload to update site</actionName>
             <displayName>Upload to update site</displayName>
             <goals>
                 <goal>cscm:updatesite</goal>
             </goals>
         </action>
+        
         
         
     </actions>
