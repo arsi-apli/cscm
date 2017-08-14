@@ -276,6 +276,22 @@ public class DatabaseManager {
         return false;
     }
 
+    public static boolean deleteLocalHelp(int id) {
+        JpaEntityManager manager = DatabaseManager.findManager();
+        Helps help = manager.find(Helps.class, id);
+        if (help != null) {
+            EntityTransaction transaction = manager.getTransaction();
+            if (!transaction.isActive()) {
+                transaction.begin();
+            }
+            manager.remove(help);
+            manager.flush();
+            transaction.commit();
+            return true;
+        }
+        return false;
+    }
+
     public static void addRankToDb(AddRank msg, Helps help) {
         JpaEntityManager manager = DatabaseManager.findManager();
         EntityTransaction transaction = manager.getTransaction();
