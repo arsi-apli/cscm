@@ -201,7 +201,7 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
             list.setSelectedIndex(list.locationToIndex(evt.getPoint()));
             DescriptionRecord rec = list.getSelectedValue();
             String email = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.EMAIL, "");
-            if (rec != null && email.equalsIgnoreCase(rec.getEmail())) {
+            if (rec != null && (email.equalsIgnoreCase(rec.getEmail())) || ((ServerType) server.getSelectedItem()) == ServerType.LOCAL) {
                 delete.setEnabled(true);
             } else {
                 delete.setEnabled(false);
@@ -242,14 +242,14 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
                 mime.setModel(new DefaultComboBoxModel<>());
             }
         }
-         list.setCellRenderer(new DefaultListCellRenderer() {
+        list.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof DescriptionRecord) {
                     label.setText(((DescriptionRecord) value).getDescription());
                     String email = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.EMAIL, "");
-                    if (email.equalsIgnoreCase(((DescriptionRecord) value).getEmail())) {
+                    if (email.equalsIgnoreCase(((DescriptionRecord) value).getEmail()) || ((ServerType) server.getSelectedItem()) == ServerType.LOCAL) {
                         label.setIcon(iconOwner);
                     } else {
                         label.setIcon(iconOther);
@@ -345,6 +345,5 @@ public final class SnippetsBrowserTopComponent extends TopComponent implements I
             itemStateChanged(new ItemEvent(mime, 0, mime.getSelectedItem(), ItemEvent.SELECTED));
         }
     }
-
 
 }

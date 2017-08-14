@@ -118,7 +118,7 @@ public class LocalTransferManager {
     }
 
     public static Status deleteHelpRecord(DeleteSnippet msg) {
-        return new Status(DatabaseManager.deleteHelp(msg.getSnippetId(), msg.getEmail(), msg.getPasswordHash()));
+        return new Status(DatabaseManager.deleteLocalHelp(msg.getSnippetId()));
     }
 
     public static HelpRecord[] findFullTextCode(FindFullTextCode msg) {
