@@ -61,7 +61,7 @@ public class Users implements Serializable {
     private String last;
     @Column(name = "PASSWORD")
     private String password;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "users")
     private List<Helps> helpsList = new ArrayList<>();
 
     public Users() {

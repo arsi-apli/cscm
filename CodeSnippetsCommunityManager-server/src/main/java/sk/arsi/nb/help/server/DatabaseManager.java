@@ -6,7 +6,6 @@
 package sk.arsi.nb.help.server;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -260,6 +259,31 @@ public class DatabaseManager {
         manager.refresh(tmp);
     }
 
+    public static boolean editHelp(int id, List<Keyslist> keys, List<Classeslist> classes, String code, String description, Mimetype mimetype, Users user) {
+        JpaEntityManager manager = DatabaseManager.findManager();
+        Helps tmp = manager.find(Helps.class, id);
+        if (tmp != null) {
+            EntityTransaction transaction = manager.getTransaction();
+            if (!transaction.isActive()) {
+                transaction.begin();
+            }
+            tmp.getKeyslistList().clear();
+            tmp.getKeyslistList().addAll(keys);
+            tmp.getClasseslistList().clear();
+            tmp.getClasseslistList().addAll(classes);
+            tmp.setCreateddate(new Date());
+            tmp.setHelp(code);
+            tmp.setUser(user);
+            tmp.setMimetype(mimetype);
+            tmp.setDescription(description);
+            manager.flush();
+            transaction.commit();
+            manager.refresh(tmp);
+            return true;
+        }
+        return false;
+    }
+
     public static boolean deleteHelp(int id, String email, String password) {
         JpaEntityManager manager = DatabaseManager.findManager();
         Helps help = manager.find(Helps.class, id);
@@ -316,7 +340,7 @@ public class DatabaseManager {
 
     public static boolean rankExist(long helpId, String user) {
         JpaEntityManager manager = DatabaseManager.findManager();
-        Query query1 = manager.createNativeQuery("SELECT * FROM help.RANKS where helps_idhelps='" + helpId + "' and USER='" + user + "';", Ranks.class);
+        Query query1 = manager.createNativeQuery("SELECT * FROM RANKS where helps_idhelps='" + helpId + "' and USERNAME='" + user + "';", Ranks.class);
         return !query1.getResultList().isEmpty();
     }
 
@@ -345,7 +369,7 @@ public class DatabaseManager {
         } catch (Exception e) {
         }
         if (singleResult != null && singleResult.length != 0) {
-            return ((BigDecimal) singleResult[1]).intValue();
+            return ((int) singleResult[1]);
         } else {
             return 0;
         }

@@ -40,6 +40,7 @@ import sk.arsi.nb.help.transfer.AddRank;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
 import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.DescriptionRecord;
+import sk.arsi.nb.help.transfer.EditHelpRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
@@ -141,7 +142,9 @@ public class NbDocClient {
                 }
                 return response;
             default:
-                if (toSend instanceof CreateHelpRecord) {
+                if (toSend instanceof EditHelpRecord) {
+                    return LocalTransferManager.editHelpRecord((EditHelpRecord) toSend); //test before CreateHelpRecord
+                } else if (toSend instanceof CreateHelpRecord) {
                     return LocalTransferManager.createHelpRecord((CreateHelpRecord) toSend);
                 } else if (toSend instanceof FindByKey) {
                     return LocalTransferManager.findByKey((FindByKey) toSend);
@@ -215,7 +218,6 @@ public class NbDocClient {
         }
         return null;
     }
-
 
     public static Object getByFullTextDescription(String name, ServerType serverType, String mimeType) {
         return getByFullTextDescription(name, serverType, mimeType, NbPreferences.forModule(CommunitydocPanel.class).getInt(NbDocClient.MAX_DESCRIPTION_RESULTS, 25));
@@ -318,6 +320,16 @@ public class NbDocClient {
             Socket clientSocket = connect(serverType);
             return (Status) sendAndReceive(clientSocket, record, serverType);
         } catch (Exception ex) {
+        }
+        return null;
+    }
+
+    public static Status editHelp(EditHelpRecord record, ServerType serverType) {
+        try {
+            Socket clientSocket = connect(serverType);
+            return (Status) sendAndReceive(clientSocket, record, serverType);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }

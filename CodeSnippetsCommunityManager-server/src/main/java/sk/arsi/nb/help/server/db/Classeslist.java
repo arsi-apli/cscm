@@ -50,7 +50,7 @@ public class Classeslist implements Serializable {
     @Column(name = "CLASSNAME")
     private String classname;
 
-    @ManyToMany(mappedBy = "classeslistList", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "classeslistList", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Helps> helpsList = new ArrayList<>();
 
     public Classeslist() {

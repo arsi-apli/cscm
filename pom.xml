@@ -159,7 +159,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nb.version>RELEASE81</nb.version>
         <nb.module.version>01.12</nb.module.version>
-        <transfer.version>01.02</transfer.version>
+        <transfer.version>01.03</transfer.version>
         <parent.version>01.01</parent.version>
         <release.version>BETA-SNAPSHOT</release.version>
         <module.name>CodeSnippetsCommunityManager-${project.version}-${nb.version}</module.name>

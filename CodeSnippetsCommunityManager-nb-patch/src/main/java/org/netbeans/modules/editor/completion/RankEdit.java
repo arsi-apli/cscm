@@ -145,7 +145,7 @@ public class RankEdit extends javax.swing.JPanel {
             setButtonRank(rank4, false);
             setButtonRank(rank5, false);
         } else {
-            int rank = NbPreferences.forModule(RankEdit.class).getInt("RANaK_" + provider.getHelpId(), 100);
+            int rank = NbPreferences.forModule(RankEdit.class).getInt("RANK_" + provider.getHelpId(), 100);
             if (rank == 100) {
                 setRank(0);
             } else {
@@ -157,7 +157,7 @@ public class RankEdit extends javax.swing.JPanel {
 
     private void setRankSave(int rank) {
         setRank(rank);
-        NbPreferences.forModule(RankEdit.class).putInt("RANaK_" + provider.getHelpId(), rank);
+        NbPreferences.forModule(RankEdit.class).putInt("RANK_" + provider.getHelpId(), rank);
     }
 
     private void setRank(int rank) {

@@ -75,15 +75,15 @@ public class Helps implements Serializable {
     @JoinTable(name = "KEYSLIST_has_HELPS", joinColumns = {
         @JoinColumn(name = "HELPS_IDHELPS", referencedColumnName = "IDHELPS")}, inverseJoinColumns = {
         @JoinColumn(name = "KEYSLIST_KEYNAME", referencedColumnName = "KEYNAME")})
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Keyslist> keyslistList = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "helpsIdhelps")
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "helpsIdhelps")
     private List<Ranks> ranksList = new ArrayList<>();
 
     @JoinTable(name = "CLASSESLIST_has_HELPS", joinColumns = {
         @JoinColumn(name = "HELPS_IDHELPS", referencedColumnName = "IDHELPS")}, inverseJoinColumns = {
         @JoinColumn(name = "CLASSESLIST_CLASSNAME", referencedColumnName = "CLASSNAME")})
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Classeslist> classeslistList = new ArrayList<>();
     @JoinColumn(name = "MIMETYPE_MIMETYPE", referencedColumnName = "MIMETYPE")
     @ManyToOne

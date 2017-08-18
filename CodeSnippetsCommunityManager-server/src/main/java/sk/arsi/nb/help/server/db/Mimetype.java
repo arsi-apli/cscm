@@ -53,7 +53,7 @@ public class Mimetype implements Serializable {
     @Basic(optional = false)
     @Column(name = "DESCRIPTION")
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mimetype")
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "mimetype")
     private List<Helps> helpsList = new ArrayList<>();
 
     public Mimetype() {

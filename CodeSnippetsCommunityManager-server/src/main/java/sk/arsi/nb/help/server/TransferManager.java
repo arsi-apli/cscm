@@ -31,6 +31,7 @@ import sk.arsi.nb.help.transfer.AddRank;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
 import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.DescriptionRecord;
+import sk.arsi.nb.help.transfer.EditHelpRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
@@ -163,6 +164,40 @@ public class TransferManager {
                         e.printStackTrace();
                         ctx.channel().writeAndFlush(new Status(false));
                     }
+                }
+                ReferenceCountUtil.release(msg);
+                ctx.channel().close();
+            }
+        };
+        sqlPool.execute(runnable);
+
+    }
+
+    public static void editHelpRecord(EditHelpRecord msg, ChannelHandlerContext ctx) throws Exception {
+
+        Runnable runnable;
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Boolean disableAuth = ConfigManager.SERVER.get(ConfigManager.SERVER_TURN_OFF_AUTHENTICATION, Boolean.TYPE);
+                    Users user = DatabaseManager.findUser(msg.getEmail());
+                    if (!disableAuth) {
+                        if (user == null || !user.getPassword().equals(msg.getPasswordHash())) {
+                            ctx.channel().writeAndFlush(new Status(false));
+                            ReferenceCountUtil.release(msg);
+                            ctx.channel().close();
+                            return;
+                        }
+                    }
+                    Mimetype mime = DatabaseManager.findOrCreateMimeType(msg.getMimeType());
+                    List<Keyslist> keys = DatabaseManager.findOrCereateKeys(msg.getKeys());
+                    List<Classeslist> classes = DatabaseManager.findOrCereateClasses(msg.getClasses());
+                    ctx.channel().writeAndFlush(new Status(DatabaseManager.editHelp(msg.getId(), keys, classes, msg.getCode(), msg.getDescription(), mime, user)));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ctx.channel().writeAndFlush(new Status(false));
                 }
                 ReferenceCountUtil.release(msg);
                 ctx.channel().close();
