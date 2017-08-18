@@ -83,10 +83,16 @@ public class CodeViewer extends TopComponent {
                         case TEAM: {
                             String email = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.EMAIL, "");
                             makeEditable(description.getEmail().equalsIgnoreCase(email));
+                            rank.setVisible(true);
+                            author.setVisible(true);
+                            authorLb.setVisible(true);
                         }
                         break;
                         case LOCAL:
                             makeEditable(true);
+                            rank.setVisible(false);
+                            author.setVisible(false);
+                            authorLb.setVisible(false);
                             break;
                         default:
                             throw new AssertionError(serverType.name());
@@ -122,9 +128,6 @@ public class CodeViewer extends TopComponent {
                 setIcon(iconOther.getImage());
             }
         });
-        rank.setVisible(!editable);
-        author.setVisible(!editable);
-        authorLb.setVisible(!editable);
 
     }
 
