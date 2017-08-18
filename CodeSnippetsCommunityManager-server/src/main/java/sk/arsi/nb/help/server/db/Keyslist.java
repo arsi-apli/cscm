@@ -49,7 +49,7 @@ public class Keyslist implements Serializable {
     @Basic(optional = false)
     @Column(name = "KEYNAME")
     private String keyname;
-    @ManyToMany(mappedBy = "keyslistList", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "keyslistList", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Helps> helpsList = new ArrayList<>();
 
     public Keyslist() {

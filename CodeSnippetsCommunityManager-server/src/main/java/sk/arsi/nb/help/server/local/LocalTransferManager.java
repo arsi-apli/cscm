@@ -19,6 +19,7 @@ import sk.arsi.nb.help.server.lucene.LuceneManager;
 import sk.arsi.nb.help.transfer.CreateHelpRecord;
 import sk.arsi.nb.help.transfer.DeleteSnippet;
 import sk.arsi.nb.help.transfer.DescriptionRecord;
+import sk.arsi.nb.help.transfer.EditHelpRecord;
 import sk.arsi.nb.help.transfer.FindByClass;
 import sk.arsi.nb.help.transfer.FindByKey;
 import sk.arsi.nb.help.transfer.FindFullTextCode;
@@ -113,6 +114,21 @@ public class LocalTransferManager {
             } catch (Exception e) {
                 return (new Status(false));
             }
+        }
+
+    }
+
+    public static Status editHelpRecord(EditHelpRecord msg) {
+
+        try {
+            Mimetype mime = DatabaseManager.findOrCreateMimeType(msg.getMimeType());
+            List<Keyslist> keys = DatabaseManager.findOrCereateKeys(msg.getKeys());
+            List<Classeslist> classes = DatabaseManager.findOrCereateClasses(msg.getClasses());
+            Users user = DatabaseManager.findUser("local@local.loc");
+            return (new Status(DatabaseManager.editHelp(msg.getId(), keys, classes, msg.getCode(), msg.getDescription(), mime, user)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return (new Status(false));
         }
 
     }

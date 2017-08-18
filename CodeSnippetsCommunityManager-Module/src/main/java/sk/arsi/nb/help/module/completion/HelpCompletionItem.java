@@ -20,6 +20,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -57,11 +59,13 @@ public class HelpCompletionItem implements CompletionItem {
     private static ImageIcon iconTeam;
     private static ImageIcon iconLocal;
     private final ServerType serverType;
+    private static final ExecutorService pool = Executors.newFixedThreadPool(1);
 
     public HelpCompletionItem(HelpRecord help, String searched, ServerType serverType) {
         this.help = help;
         this.searched = searched;
         this.serverType = serverType;
+
     }
 
     public HelpRecord getHelp() {
@@ -276,7 +280,16 @@ public class HelpCompletionItem implements CompletionItem {
 
         @Override
         public void setRank(int rank) {
-            NbDocClient.addRank(help.getId(), rank, serverType);
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        NbDocClient.addRank(help.getId(), rank, serverType);
+                    } catch (Exception e) {
+                    }
+                }
+            };
+            pool.execute(runnable);
         }
 
         @Override

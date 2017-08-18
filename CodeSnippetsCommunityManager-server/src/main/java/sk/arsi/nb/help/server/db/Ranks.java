@@ -56,7 +56,7 @@ public class Ranks implements Serializable {
     @Column(name = "USERNAME")
     private String user;
     @JoinColumn(name = "helps_idhelps", referencedColumnName = "IDHELPS")
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Helps helpsIdhelps;
 
     public Ranks() {

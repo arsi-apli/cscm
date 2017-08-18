@@ -7,7 +7,7 @@
         <version>01.01</version>
     </parent>
     <artifactId>CodeSnippetsCommunityManager-transfer</artifactId>
-    <version>01.02</version>
+    <version>01.03</version>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
