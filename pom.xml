@@ -14,8 +14,6 @@
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <nb.version>RELEASE81</nb.version>
-                <transfer.version>01.02</transfer.version>
-                <parent.version>01.01</parent.version>
                 <module.name>CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}</module.name>
                 <module.target>${basedir}/target</module.target>
             </properties>
@@ -25,8 +23,6 @@
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <nb.version>RELEASE81</nb.version>
-                <transfer.version>01.02</transfer.version>
-                <parent.version>01.01</parent.version>
                 <module.name>CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}</module.name>
                 <module.target>${basedir}/../NB-MODULE-${nb.module.version}-${nb.version}-target</module.target>
             </properties>
@@ -89,8 +85,6 @@
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <nb.version>RELEASE82</nb.version>
-                <transfer.version>01.02</transfer.version>
-                <parent.version>01.01</parent.version>
                 <module.name>CodeSnippetsCommunityManager-${nb.module.version}-${nb.version}</module.name>
                 <module.target>${basedir}/../NB-MODULE-${nb.module.version}-${nb.version}-target</module.target>
             </properties>
@@ -158,7 +152,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nb.version>RELEASE81</nb.version>
-        <nb.module.version>01.12</nb.module.version>
+        <nb.module.version>01.15</nb.module.version>
         <transfer.version>01.03</transfer.version>
         <parent.version>01.01</parent.version>
         <release.version>BETA-SNAPSHOT</release.version>
