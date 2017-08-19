@@ -50,7 +50,7 @@ public class CodeViewer extends TopComponent {
     public CodeViewer(DescriptionRecord description, String mimeType, ServerType serverType) {
         initComponents();
         this.serverType = serverType;
-        key = mimeType + description.getDescription() + serverType;
+        key = mimeType + description.getDescription() + serverType + description.getId();
         ACTIVE.put(key, this);
         setName(description.getDescription());
         JComponent[] editorComponents = Tools.createEditorEditor(mimeType);
