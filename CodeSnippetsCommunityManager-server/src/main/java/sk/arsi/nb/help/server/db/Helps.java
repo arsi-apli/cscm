@@ -68,9 +68,9 @@ public class Helps implements Serializable {
     @Column(name = "CREATEDDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createddate;
-    @Column(name = "HELP", length = 5000)
+    @Column(name = "HELP", length = 2147483647)
     private String help;
-    @Column(name = "DESCRIPTION", length = 100)
+    @Column(name = "DESCRIPTION", length = 5000)
     private String description;
     @JoinTable(name = "KEYSLIST_has_HELPS", joinColumns = {
         @JoinColumn(name = "HELPS_IDHELPS", referencedColumnName = "IDHELPS")}, inverseJoinColumns = {
