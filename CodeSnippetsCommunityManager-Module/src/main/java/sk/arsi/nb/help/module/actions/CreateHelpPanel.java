@@ -285,15 +285,25 @@ public class CreateHelpPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.jLabel2.text")); // NOI18N
 
-        keys.setText(org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.keys.text")); // NOI18N
+        keys.setText(org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.text")); // NOI18N
+        keys.setMaximumSize(new java.awt.Dimension(510, 19));
+        keys.setMinimumSize(new java.awt.Dimension(510, 19));
+        keys.setName(""); // NOI18N
+        keys.setPreferredSize(new java.awt.Dimension(510, 19));
 
         classes.setText(org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.classes.text")); // NOI18N
+        classes.setMaximumSize(new java.awt.Dimension(510, 19));
+        classes.setMinimumSize(new java.awt.Dimension(510, 19));
+        classes.setPreferredSize(new java.awt.Dimension(510, 19));
 
         jPanel1.setLayout(new java.awt.CardLayout());
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.jLabel3.text")); // NOI18N
 
         description.setText(org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.description.text")); // NOI18N
+        description.setMaximumSize(new java.awt.Dimension(510, 19));
+        description.setMinimumSize(new java.awt.Dimension(510, 19));
+        description.setPreferredSize(new java.awt.Dimension(510, 19));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(CreateHelpPanel.class, "CreateHelpPanel.jLabel4.text")); // NOI18N
 
@@ -330,7 +340,6 @@ public class CreateHelpPanel extends javax.swing.JPanel {
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(keys, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(serverSelector1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -339,8 +348,9 @@ public class CreateHelpPanel extends javax.swing.JPanel {
                         .addComponent(mimeType)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(duplicateCode))
-                    .addComponent(classes, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(description))
+                    .addComponent(classes, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(keys, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE))
         );
