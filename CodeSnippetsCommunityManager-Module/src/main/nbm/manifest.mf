@@ -2,4 +2,4 @@ Manifest-Version: 1.0
 OpenIDE-Module-Layer: sk/arsi/nb/help/module/layer.xml
 OpenIDE-Module-Localizing-Bundle: sk/arsi/nb/help/module/Bundle.properties
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
-
+OpenIDE-Module-Display-Category: Documentation
