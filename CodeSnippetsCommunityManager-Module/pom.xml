@@ -8,7 +8,35 @@
     </parent>
     <artifactId>CodeSnippetsCommunityManager-Module</artifactId>
     <packaging>nbm</packaging>
-    <version>01.16</version>
+    <version>01.17</version>
+    <name>Code snippets community manager</name>
+    <organization>
+        <name>ArSi</name>
+    </organization>
+    <description>Code snippets manager integrated to NetBeans Code Completion.</description>
+    <inceptionYear>2017</inceptionYear>
+    <url>https://sourceforge.net/projects/cscm</url>
+    <issueManagement>
+        <system>Sourceforge</system>
+        <url>https://sourceforge.net/p/cscm/tickets</url>
+    </issueManagement>
+    <licenses>
+        <license>
+            <name>Apache License 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>arsi</id>
+            <name>ArSi</name>
+            <email>arsi@arsi.sk</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
     <build>
         <resources>
             <resource>
@@ -23,6 +51,10 @@
                 <version>4.2-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <author>ArSi (arsi@arsi.sk)</author>
+                    <requiresRestart>true</requiresRestart>
+                    <keystore>/jetty/keystore/keystore.ks</keystore>
+                    <keystorealias>arsi</keystorealias>
                     <cluster>ide</cluster>
                     <requiresRestart>true</requiresRestart>
                     <nbmResources>
@@ -38,11 +70,6 @@
                         <dependency>
                             Private Package Reference
                             <id>org.netbeans.api:org-netbeans-modules-editor-completion</id>
-                            <type>impl</type>
-                        </dependency>
-                        <dependency>
-                            Private Package Reference
-                            <id>org.netbeans.api:org-netbeans-modules-editor-mimelookup</id>
                             <type>impl</type>
                         </dependency>
                     </moduleDependencies>

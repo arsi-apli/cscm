@@ -36,12 +36,14 @@ import org.netbeans.editor.BaseDocument;
 import org.netbeans.editor.Utilities;
 import org.netbeans.lib.editor.util.swing.DocumentUtilities;
 import org.netbeans.modules.editor.NbEditorUtilities;
+import org.netbeans.modules.editor.completion.GlobalCompletionProvider;
 import org.netbeans.spi.editor.completion.CompletionProvider;
 import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.openide.util.NbPreferences;
+import org.openide.util.lookup.ServiceProvider;
 import sk.arsi.nb.help.module.actions.SearchSelectionToolbar;
 import sk.arsi.nb.help.module.actions.SearchSelector;
 import sk.arsi.nb.help.module.actions.ServerSelectionToolbar;
@@ -56,7 +58,8 @@ import sk.arsi.nb.help.transfer.HelpRecord;
  *
  * @author Arsi
  */
-public final class HelpCompletionProvider implements CompletionProvider {
+@ServiceProvider(service = GlobalCompletionProvider.class)
+public final class HelpCompletionProvider implements GlobalCompletionProvider {
 
     public static final String FULLTEXTSEARCH = "FULLTEXTSEARCH";
 
@@ -129,7 +132,7 @@ public final class HelpCompletionProvider implements CompletionProvider {
                 MimePath mimePath = mimeType == null ? MimePath.EMPTY : MimePath.get(mimeType);
                 Preferences prefs = MimeLookup.getLookup(mimePath).lookup(Preferences.class);
                 String teamServer = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.TEAM_SERVER, "");
-                String masterServer = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.SERVER, "");
+                String masterServer = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.SERVER, "server.arsi.sk");
                 ServerSelector panel = ServerSelectionToolbar.findPanel(doc);
                 SearchSelector panelSearch = SearchSelectionToolbar.findPanel(doc);
                 //local  - key search
