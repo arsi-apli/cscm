@@ -51,6 +51,7 @@
                 <version>4.2-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <netbeansInstallation>/ssd/nb/netbeans-8.2</netbeansInstallation>
                     <author>ArSi (arsi@arsi.sk)</author>
                     <requiresRestart>true</requiresRestart>
                     <keystore>/jetty/keystore/keystore.ks</keystore>
@@ -112,7 +113,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -122,63 +123,63 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-ui</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-options-api</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-completion</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-lexer</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-settings</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-lib</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-util</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -188,32 +189,32 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-lib2</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-text</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-loaders</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-document</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -257,27 +258,27 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-modules</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems-nb</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-autoupdate-services</artifactId>
-            <version>RELEASE81</version>
+            <version>RELEASE82</version>
         </dependency>
     </dependencies>
 </project>
