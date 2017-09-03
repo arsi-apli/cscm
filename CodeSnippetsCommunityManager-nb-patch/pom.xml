@@ -12,7 +12,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-completion</artifactId>
-            <version>${nb.version}</version>
+            <version>RELEASE82</version>
             <type>jar</type>
         </dependency>
     </dependencies>
