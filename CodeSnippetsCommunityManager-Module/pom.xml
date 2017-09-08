@@ -8,7 +8,7 @@
     </parent>
     <artifactId>CodeSnippetsCommunityManager-Module</artifactId>
     <packaging>nbm</packaging>
-    <version>01.17</version>
+    <version>01.18</version>
     <name>Code snippets community manager</name>
     <organization>
         <name>ArSi</name>
