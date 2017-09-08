@@ -96,71 +96,74 @@ public final class HelpCompletionProvider implements GlobalCompletionProvider {
 
         @Override
         protected void query(CompletionResultSet resultSet, Document doc, int caretOffset) {
-            String langPath = null;
-            String identifierBeforeCursor = null;
-            if (doc instanceof AbstractDocument) {
-                AbstractDocument adoc = (AbstractDocument) doc;
-                adoc.readLock();
-                try {
+            try {
+                String langPath = null;
+                String identifierBeforeCursor = null;
+                if (doc instanceof AbstractDocument) {
+                    AbstractDocument adoc = (AbstractDocument) doc;
+                    adoc.readLock();
                     try {
-                        if (adoc instanceof BaseDocument) {
-                            identifierBeforeCursor = Utilities.getIdentifierBefore((BaseDocument) adoc, caretOffset);
+                        try {
+                            if (adoc instanceof BaseDocument) {
+                                identifierBeforeCursor = Utilities.getIdentifierBefore((BaseDocument) adoc, caretOffset);
+                            }
+                        } catch (BadLocationException e) {
+                            // leave identifierBeforeCursor null
                         }
-                    } catch (BadLocationException e) {
-                        // leave identifierBeforeCursor null
+                        List<TokenSequence<?>> list = TokenHierarchy.get(doc).embeddedTokenSequences(caretOffset, true);
+                        if (list.size() > 1) {
+                            langPath = list.get(list.size() - 1).languagePath().mimePath();
+                        }
+                    } finally {
+                        adoc.readUnlock();
                     }
-                    List<TokenSequence<?>> list = TokenHierarchy.get(doc).embeddedTokenSequences(caretOffset, true);
-                    if (list.size() > 1) {
-                        langPath = list.get(list.size() - 1).languagePath().mimePath();
+                }
+
+                if (identifierBeforeCursor == null) {
+                    identifierBeforeCursor = ""; //NOI18N
+                }
+
+                if (langPath == null) {
+                    langPath = NbEditorUtilities.getMimeType(doc);
+                }
+
+                queryAnchorOffset = caretOffset - identifierBeforeCursor.length();
+                if (langPath != null && identifierBeforeCursor.length() > 1) {//min 2 chars
+                    String mimeType = DocumentUtilities.getMimeType(component);
+                    MimePath mimePath = mimeType == null ? MimePath.EMPTY : MimePath.get(mimeType);
+                    Preferences prefs = MimeLookup.getLookup(mimePath).lookup(Preferences.class);
+                    String teamServer = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.TEAM_SERVER, "");
+                    String masterServer = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.SERVER, "server.arsi.sk");
+                    ServerSelector panel = ServerSelectionToolbar.findPanel(doc);
+                    SearchSelector panelSearch = SearchSelectionToolbar.findPanel(doc);
+                    //local  - key search
+                    if (((panel == null || panel.isLocal()) && (panelSearch == null || !panelSearch.isFullText())) && !"".equals(identifierBeforeCursor)) {
+                        // local  fulltext search
+                        readByKey(identifierBeforeCursor, mimeType, resultSet, ServerType.LOCAL);
+                    } else if ((panel == null || panel.isLocal()) && (panelSearch == null || panelSearch.isFullText())) {
+                        readFullText(doc, caretOffset, mimeType, identifierBeforeCursor, resultSet, ServerType.LOCAL);
+
                     }
-                } finally {
-                    adoc.readUnlock();
-                }
-            }
+                    //team server - key search
+                    if (((panel == null || panel.isTeam()) && (panelSearch == null || !panelSearch.isFullText())) && !"".equals(identifierBeforeCursor) && !"".equals(teamServer)) {
+                        // team server fulltext search
 
-            if (identifierBeforeCursor == null) {
-                identifierBeforeCursor = ""; //NOI18N
-            }
+                        readByKey(identifierBeforeCursor, mimeType, resultSet, ServerType.TEAM);
+                    } else if ((panel == null || panel.isTeam()) && (panelSearch == null || panelSearch.isFullText())) {
+                        readFullText(doc, caretOffset, mimeType, identifierBeforeCursor, resultSet, ServerType.TEAM);
 
-            if (langPath == null) {
-                langPath = NbEditorUtilities.getMimeType(doc);
-            }
-
-            queryAnchorOffset = caretOffset - identifierBeforeCursor.length();
-            if (langPath != null) {
-                String mimeType = DocumentUtilities.getMimeType(component);
-                MimePath mimePath = mimeType == null ? MimePath.EMPTY : MimePath.get(mimeType);
-                Preferences prefs = MimeLookup.getLookup(mimePath).lookup(Preferences.class);
-                String teamServer = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.TEAM_SERVER, "");
-                String masterServer = NbPreferences.forModule(CommunitydocPanel.class).get(NbDocClient.SERVER, "server.arsi.sk");
-                ServerSelector panel = ServerSelectionToolbar.findPanel(doc);
-                SearchSelector panelSearch = SearchSelectionToolbar.findPanel(doc);
-                //local  - key search
-                if (((panel == null || panel.isLocal()) && (panelSearch == null || !panelSearch.isFullText())) && !"".equals(identifierBeforeCursor)) {
-                    // local  fulltext search
-                    readByKey(identifierBeforeCursor, mimeType, resultSet, ServerType.LOCAL);
-                } else if ((panel == null || panel.isLocal()) && (panelSearch == null || panelSearch.isFullText())) {
-                    readFullText(doc, caretOffset, mimeType, identifierBeforeCursor, resultSet, ServerType.LOCAL);
+                    }
+                    if (((panel == null || panel.isGlobal()) && (panelSearch == null || !panelSearch.isFullText())) && !"".equals(identifierBeforeCursor) && !"".equals(masterServer)) {
+                        readByKey(identifierBeforeCursor, mimeType, resultSet, ServerType.MASTER);
+                    } else if ((panel == null || panel.isGlobal()) && (panelSearch == null || panelSearch.isFullText())) {
+                        readFullText(doc, caretOffset, mimeType, identifierBeforeCursor, resultSet, ServerType.MASTER);
+                    }
 
                 }
-                //team server - key search
-                if (((panel == null || panel.isTeam()) && (panelSearch == null || !panelSearch.isFullText())) && !"".equals(identifierBeforeCursor) && !"".equals(teamServer)) {
-                    // team server fulltext search
 
-                    readByKey(identifierBeforeCursor, mimeType, resultSet, ServerType.TEAM);
-                } else if ((panel == null || panel.isTeam()) && (panelSearch == null || panelSearch.isFullText())) {
-                    readFullText(doc, caretOffset, mimeType, identifierBeforeCursor, resultSet, ServerType.TEAM);
-
-                }
-                if (((panel == null || panel.isGlobal()) && (panelSearch == null || !panelSearch.isFullText())) && !"".equals(identifierBeforeCursor) && !"".equals(masterServer)) {
-                    readByKey(identifierBeforeCursor, mimeType, resultSet, ServerType.MASTER);
-                } else if ((panel == null || panel.isGlobal()) && (panelSearch == null || panelSearch.isFullText())) {
-                    readFullText(doc, caretOffset, mimeType, identifierBeforeCursor, resultSet, ServerType.MASTER);
-                }
-
+                resultSet.setAnchorOffset(queryAnchorOffset);
+            } catch (Exception e) {
             }
-
-            resultSet.setAnchorOffset(queryAnchorOffset);
             resultSet.finish();
         }
 
