@@ -15,7 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nb.version>RELEASE81</nb.version>
-        <nb.module.version>01.17</nb.module.version>
+        <nb.module.version>01.18</nb.module.version>
         <transfer.version>01.03</transfer.version>
         <parent.version>01.01</parent.version>
         <release.version>SNAPSHOT</release.version>
